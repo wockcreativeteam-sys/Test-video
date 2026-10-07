@@ -1,0 +1,123 @@
+{
+ "giraffe": {
+  "w": 390,
+  "h": 678,
+  "src": "ge_giraffe_incubator.jpg",
+  "box": [
+   512,
+   12,
+   912,
+   708
+  ]
+ },
+ "sle6000": {
+  "w": 344,
+  "h": 647,
+  "src": "sle_6000.jpg",
+  "box": [
+   532,
+   18,
+   902,
+   672
+  ]
+ },
+ "olympus": {
+  "w": 373,
+  "h": 547,
+  "src": "olympus_otv_s700.jpg",
+  "box": [
+   538,
+   44,
+   918,
+   600
+  ]
+ },
+ "lullaby": {
+  "w": 369,
+  "h": 731,
+  "src": "ge_lullaby_warmer.jpg",
+  "box": [
+   542,
+   22,
+   922,
+   762
+  ]
+ },
+ "benq": {
+  "w": 620,
+  "h": 280,
+  "src": "benq_trimax_650ns.jpg",
+  "box": [
+   384,
+   252,
+   1024,
+   548
+  ]
+ },
+ "infusomat": {
+  "w": 444,
+  "h": 528,
+  "src": "bbraun_infusomat_compact_plus.jpg",
+  "box": [
+   518,
+   0,
+   962,
+   528
+  ]
+ },
+ "ingenia": {
+  "w": 324,
+  "h": 249,
+  "src": "philips_smartpath_3t.jpg",
+  "box": [
+   390,
+   346,
+   730,
+   726
+  ]
+ },
+ "mako_a": {
+  "w": 134,
+  "h": 232,
+  "src": "hero_future_of_healthcare.jpg",
+  "box": [
+   722,
+   402,
+   856,
+   645
+  ]
+ },
+ "mako_b": {
+  "w": 144,
+  "h": 240,
+  "src": "hero_future_of_healthcare.jpg",
+  "box": [
+   922,
+   418,
+   1066,
+   664
+  ]
+ },
+ "davinci_arms": {
+  "w": 304,
+  "h": 205,
+  "src": "hero_future_of_healthcare.jpg",
+  "box": [
+   148,
+   330,
+   452,
+   548
+  ]
+ },
+ "crea_display": {
+  "w": 265,
+  "h": 149,
+  "src": "crea_ot_integration.jpg",
+  "box": [
+   400,
+   196,
+   666,
+   350
+  ]
+ }
+}
