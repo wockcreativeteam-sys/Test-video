@@ -5,3 +5,6 @@ film/audio/score.wav
 node_modules/
 __pycache__/
 *.pyc
+
+# full-quality master (~490 MB) exceeds GitHub limits; regenerate with tools/render_all.sh
+out/wockhardt_reengineered_1080p.mp4
