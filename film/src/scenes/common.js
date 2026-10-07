@@ -1,7 +1,7 @@
 // Shared scene vocabulary: machine reveals, statements, chapter tags.
 import { C } from '../palette.js';
 import { E, clamp, lerp } from '../engine/util.js';
-import { text } from '../engine/type.js';
+import { text, measure } from '../engine/type.js';
 import { label } from '../engine/annot.js';
 import { glowDot } from '../engine/lines.js';
 
@@ -107,6 +107,128 @@ export function statement(F, str, x, y, t, dur, o = {}) {
     anim: { mode: 'rise', t, dur: o.inDur ?? 0.9, stag: o.stag ?? 0.028, ease: E.outExpo },
     out: outT > 0 ? { mode: o.outMode || 'drop', t: outT, dur: 0.5, stag: 0.015, ease: E.inCubic } : null,
   });
+}
+
+const SCRIM_CACHE = new Map();
+/**
+ * A feathered dark panel that keeps type legible over line work. Fades out on every edge
+ * except `solid` ('l' | 'r'), which runs off the frame. Shapes are cached per size.
+ */
+export function scrim(F, x, y, w, h, a, o = {}) {
+  if (a <= 0.003) return;
+  w = Math.ceil(w);
+  h = Math.ceil(h);
+  const solid = o.solid || '';
+  const fx = Math.round(o.featherX ?? w * 0.4), fy = Math.round(o.featherY ?? Math.min(110, h * 0.3));
+  const key = `${w}x${h}:${solid}:${fx}:${fy}`;
+  let c = SCRIM_CACHE.get(key);
+  if (!c) {
+    c = document.createElement('canvas');
+    c.width = w;
+    c.height = h;
+    const g = c.getContext('2d');
+    const col = (k) => `rgba(3,8,20,${k})`;
+    const gx = g.createLinearGradient(0, 0, w, 0);
+    const f = fx / w;
+    if (solid === 'l') {
+      gx.addColorStop(0, col(1));
+      gx.addColorStop(1 - f, col(0.75));
+      gx.addColorStop(1, col(0));
+    } else if (solid === 'r') {
+      gx.addColorStop(0, col(0));
+      gx.addColorStop(f, col(0.75));
+      gx.addColorStop(1, col(1));
+    } else {
+      gx.addColorStop(0, col(0));
+      gx.addColorStop(Math.min(0.45, f), col(1));
+      gx.addColorStop(Math.max(0.55, 1 - f), col(1));
+      gx.addColorStop(1, col(0));
+    }
+    g.fillStyle = gx;
+    g.fillRect(0, 0, w, h);
+    g.globalCompositeOperation = 'destination-in';
+    const gy = g.createLinearGradient(0, 0, 0, h);
+    gy.addColorStop(0, 'rgba(0,0,0,0)');
+    gy.addColorStop(fy / h, 'rgba(0,0,0,1)');
+    gy.addColorStop(1 - fy / h, 'rgba(0,0,0,1)');
+    gy.addColorStop(1, 'rgba(0,0,0,0)');
+    g.fillStyle = gy;
+    g.fillRect(0, 0, w, h);
+    SCRIM_CACHE.set(key, c);
+  }
+  const ctx = F.ctx;
+  ctx.save();
+  ctx.globalAlpha = Math.min(1, a);
+  ctx.drawImage(c, x, y);
+  ctx.restore();
+}
+
+/** a two-line benefit headline (top-left by default); lines rise in, then drop away */
+export function headline(F, lines, t, dur, o = {}) {
+  const x = o.x ?? 120, y = o.y ?? 214, lh = o.lh ?? 86;
+  lines.forEach((str, i) => statement(F, str, x, y + i * lh, t - i * 0.16, dur - i * 0.16, o));
+}
+
+/**
+ * The technology nameplate — a lower third that names the machine behind the benefit:
+ *   ── CATEGORY            (mono, tracked)
+ *   NAME OF THE SYSTEM     (Inter Display, large)
+ *   ───────────            (hairline, draws on)
+ *   PROOF · PROOF · PROOF  (mono, from the spec sheet)
+ * t = seconds since it starts, dur = hold. o: x, y (name baseline), align 'l'|'r', size, day.
+ */
+export function nameplate(F, cat, name, proof, t, dur, o = {}) {
+  if (t < 0 || t > dur + 0.8) return;
+  F.L.flush(); // sit above everything already drawn
+  const ctx = F.ctx;
+  const size = o.size ?? 50;
+  const x = o.x ?? 120, y = o.y ?? 948;
+  const right = o.align === 'r';
+  const day = !!o.day;
+  const inkRgb = day ? C.INK : C.WHITE;
+  const catRgb = day ? C.BLUE : C.LUMI;
+  const proofRgb = day ? C.BLUE : C.ICE;
+  const outT = t - dur;
+  const fadeOut = 1 - E.inCubic(clamp(outT / 0.6));
+  const sName = { fam: 'D', wt: 600, size, track: -0.008, align: right ? 'r' : 'l', rgb: inkRgb, a: fadeOut };
+  const w = measure(F, name, sName);
+  // a soft scrim keeps the plate legible over line work (night scenes only)
+  if (!day && (o.scrim ?? true)) {
+    const x0 = right ? x - w - 260 : x - 200, x1 = right ? x + 200 : x + w + 260;
+    const y0 = y - size - 120, y1 = y + 100;
+    const solid = x0 <= 0 ? 'l' : x1 >= 1920 ? 'r' : '';
+    scrim(F, Math.max(0, x0), y0, Math.min(1920, x1) - Math.max(0, x0), y1 - y0, 0.55 * clamp(t / 0.5) * fadeOut, { solid, featherY: 70 });
+  }
+  // category with a leading rule
+  const rule = 26 * E.outCubic(clamp(t / 0.45));
+  ctx.strokeStyle = `rgba(${catRgb},${0.8 * fadeOut})`;
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  const cy = y - size - 22;
+  if (right) {
+    ctx.moveTo(x, cy - 4.5);
+    ctx.lineTo(x - rule, cy - 4.5);
+  } else {
+    ctx.moveTo(x, cy - 4.5);
+    ctx.lineTo(x + rule, cy - 4.5);
+  }
+  ctx.stroke();
+  label(F, cat, right ? x - 38 : x + 38, cy, { t, size: 13, wt: 500, a: 0.95 * fadeOut, rgb: catRgb, track: 0.2, align: right ? 'r' : 'l' });
+  // the name
+  text(F, name, x, y, { ...sName, anim: { mode: 'rise', t: t - 0.12, dur: 0.8, stag: 0.018, ease: E.outExpo } });
+  // hairline under the name
+  const hl = w * E.inOutCubic(clamp((t - 0.35) / 0.7));
+  ctx.strokeStyle = `rgba(${day ? C.INK : C.STEEL},${0.7 * fadeOut})`;
+  ctx.beginPath();
+  if (right) {
+    ctx.moveTo(x, y + 18);
+    ctx.lineTo(x - hl, y + 18);
+  } else {
+    ctx.moveTo(x, y + 18);
+    ctx.lineTo(x + hl, y + 18);
+  }
+  ctx.stroke();
+  if (proof) label(F, proof, x, y + 46, { t: t - 0.55, size: 13.5, wt: 400, a: 0.85 * fadeOut, rgb: proofRgb, track: 0.13, align: right ? 'r' : 'l', stag: 0.008 });
 }
 
 /** small chapter marker, top-left: index + name, with a hairline */

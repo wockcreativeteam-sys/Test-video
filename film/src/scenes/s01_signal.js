@@ -8,9 +8,10 @@ import { orbit } from '../engine/cam.js';
 import { HEART, pulse, sinceBeat } from '../timeline.js';
 import { ecg, fieldSignal } from '../signals.js';
 import { buildSlices, CM, topY } from '../anatomy.js';
-import { text, swapLine } from '../engine/type.js';
-import { label, dim, callout, ring } from '../engine/annot.js';
-import { machineReveal, statement, chapterTag } from './common.js';
+import { text, measure } from '../engine/type.js';
+import { label, dim, ring } from '../engine/annot.js';
+import { machineReveal, chapterTag, headline, nameplate } from './common.js';
+import { healwave, healPoint, HW_HEAD, HW_CORE } from '../engine/healwave.js';
 
 const V = 2.4; // trace speed (world units / s)
 const NL = 84; // body lines
@@ -101,9 +102,15 @@ export const S01 = {
     if (t < 10.6) drawRulerAndData(F, t);
     drawOpeningType(F, t);
     if (t > 21.0 && t < 25.6) drawIngenia(F, t);
-    statement(F, 'SEE DEEPER.', 120, 214, t - 17.3, 2.5);
-    statement(F, 'UNDERSTAND MORE.', 120, 214, t - 23.3, 2.4);
-    chapterTag(F, '01', 'DIAGNOSE', t - 17.6, 8.2);
+    // the signals are read continuously at the bedside
+    // (top-left: the trace sinks through the lower third as the field tilts)
+    nameplate(F, 'DEDICATED LIVER TRANSPLANT ICU', 'PHILIPS PATIENT MONITORING', 'ECG · SPO2 · NIBP / IBP · RESPIRATION · TEMPERATURE · CONTINUOUS', t - 11.2, 4.2, { y: 236 });
+    // imaging: each machine is named with what it gives the patient
+    headline(F, ['MORE DETAIL.', 'LESS RADIATION.'], t - 18.8, 2.5);
+    nameplate(F, 'COMPUTED TOMOGRAPHY', '128-SLICE DUAL-ENERGY CT', 'LOW-DOSE IMAGING · 70 CM GANTRY · METAL-ARTIFACT REDUCTION', t - 18.95, 2.55);
+    headline(F, ['LESS TIME IN THE SCANNER.', 'MORE IN THE IMAGE.'], t - 22.9, 2.3);
+    nameplate(F, 'MAGNETIC RESONANCE IMAGING', 'PHILIPS INGENIA 3.0T EVOLUTION', 'SMARTSPEED AI · UP TO 3× FASTER · UP TO 65% HIGHER RESOLUTION', t - 23.05, 2.2);
+    chapterTag(F, '01', 'IMAGING', t - 17.6, 8.2);
   },
 };
 
@@ -150,11 +157,21 @@ export function drawLifeLine(F, t, alpha = 1, o = {}) {
       hist[j * 3 + 1] = hbuf[s + 1];
       hist[j * 3 + 2] = hbuf[s + 2];
     }
+    // the ribbon fans out on every wave of the heartbeat, like the brand's crests
+    const fan = new Float32Array(HALF_H + 1);
+    for (let j = 0; j <= HALF_H; j++) {
+      const x = XH[HALF_H - j];
+      const tau = t + x / V;
+      fan[j] = tau < 2.0 ? 0 : Math.min(1, Math.abs(ecg(tau, 0)));
+    }
     const fadeEnd = lerp(0.05, 0.0, m);
     const reach = open * lerp(1, 0.3, seg(t, 18.0, 21.4, E.inOutSine));
-    L.poly(hist, { rgb: C.RED, a: 0.95 * a, w: o.w ?? 1.6, layer: 2, to: reach, fade: [1, fadeEnd], persp: m > 0 ? 95 : 0 });
+    // the healwave: the brand ribbon carries the heartbeat
+    const hw = { width: lerp(46, 40, m), strands: 11, lw: 1.7, twist: 1.0, phase: -t * 0.5, smooth: 70, glow: 0.04, persp: m > 0 ? 95 : 0 };
+    healwave(F, hist, { ...hw, a: 0.95 * a, to: reach, fade: [1, fadeEnd], spread: (u, i) => 0.75 + 1.1 * fan[Math.min(i, HALF_H)] });
     const fut = hbuf.subarray(HALF_H * 3);
-    L.poly(fut, { rgb: m > 0.5 ? C.RED : C.STEEL, a: lerp(0.45, 0.9, m) * a, w: lerp(1, o.w ?? 1.6, m), layer: m > 0.5 ? 2 : 0, to: reach, fade: [1, 0], persp: m > 0 ? 95 : 0 });
+    if (m > 0.5) healwave(F, fut, { ...hw, a: lerp(0.45, 0.9, m) * a, to: reach, fade: [1, 0] });
+    else L.poly(fut, { rgb: C.STEEL, a: lerp(0.45, 0.9, m) * a, w: 1, to: reach, fade: [1, 0], persp: m > 0 ? 95 : 0 });
   }
   const hp = lifeHead(t);
   const p = F.cam.p(hp[0], hp[1], hp[2]);
@@ -163,16 +180,19 @@ export function drawLifeLine(F, t, alpha = 1, o = {}) {
     const dot = o.dotOnly ? 0.45 : 1;
     L.head(p[0], p[1], {
       r: o.dotOnly ? 2.0 + pz * 1.2 : r,
-      rgb: C.RED,
-      core: '255,226,226',
+      rgb: HW_HEAD,
+      core: HW_CORE,
       a: appear * a,
       g: (34 + pz * 70 + breath * 8) * (1 - 0.4 * m) * dot,
       gi: (0.75 + pz * 0.25) * (o.dotOnly ? 0.6 : 1),
       streak: (60 + pz * 160) * (1 - m),
     });
+    // before the trace opens, the point wears the healwave as a slowly turning rim
+    const rimA = appear * a * (1 - open) * (o.dotOnly ? 0 : 1);
+    if (rimA > 0.01) healPoint(F, p[0], p[1], { r: 2.6 + breath * 0.6, a: rimA, rimScale: 3.2 + breath * 0.5, spin: t * 0.7, rimOnly: true });
     if (t < 12) {
       const s = sinceBeat(t);
-      if (s < 0.9) ring(F, p[0], p[1], 6 + E.outCubic(s / 0.9) * 120, { rgb: C.RED, a: 0.35 * (1 - s / 0.9) * appear * a, w: 1 });
+      if (s < 0.9) ring(F, p[0], p[1], 6 + E.outCubic(s / 0.9) * 120, { rgb: HW_HEAD, a: 0.35 * (1 - s / 0.9) * appear * a, w: 1 });
     }
   }
 }
@@ -256,11 +276,23 @@ function drawOpeningType(F, t) {
   if (t < 3.3 || t > 10.4) return;
   const y = 812;
   const s = { fam: 'D', wt: 300, size: 32, track: 0.34, rgb: C.ICE, a: 0.94 };
-  if (t < 6.55) {
-    text(F, 'EVERY SECOND MATTERS.', 960, y, { ...s, align: 'c', anim: { mode: 'blur', t: t - 3.4, dur: 0.9, stag: 0.035, blurPx: 9 } });
+  if (t < 6.45) {
+    // the number counts up as the line arrives; the sentence is laid out for its final width
+    const a = 0.94 * (1 - seg(t, 5.95, 6.45, E.inCubic));
+    const pre = 'YOUR HEART BEATS ', num = '100,000', post = ' TIMES A DAY.';
+    const tr = s.track * s.size;
+    const wPre = measure(F, pre, s), wNum = measure(F, num, s), wPost = measure(F, post, s);
+    const x0 = 960 - (wPre + tr + wNum + tr + wPost) / 2;
+    const xNum = x0 + wPre + tr, xPost = xNum + wNum + tr;
+    const anim = (d) => ({ mode: 'blur', t: t - 3.4 - d, dur: 0.9, stag: 0.035, blurPx: 9 });
+    text(F, pre, x0, y, { ...s, a, anim: anim(0) });
+    const n = Math.round(100000 * E.outExpo(clamp((t - 3.75) / 1.5)));
+    const fadeIn = clamp((t - 3.7) / 0.4);
+    text(F, n.toLocaleString('en-US'), xNum + wNum, y, { ...s, wt: 500, rgb: C.WHITE, align: 'r', a: a * fadeIn });
+    text(F, post, xPost, y, { ...s, a, anim: anim(0.5) });
   } else {
-    const a = 1 - seg(t, 9.3, 10.2, E.inCubic);
-    swapLine(F, 'EVERY', 'SECOND', 'DECISION', 'MATTERS.', 960, y, { ...s, a: 0.94 * a }, (t - 6.6) / 0.55);
+    const a = 0.94 * (1 - seg(t, 9.3, 10.2, E.inCubic));
+    text(F, 'WE’RE BUILT FOR THE ONE THAT DOESN’T.', 960, y, { ...s, a, align: 'c', anim: { mode: 'blur', t: t - 6.6, dur: 0.9, stag: 0.035, blurPx: 9 } });
   }
 }
 
@@ -420,16 +452,7 @@ function drawIngenia(F, t) {
   const s = rpx / BORE.r;
   const x = c[0] - BORE.x * s, y = c[1] - BORE.y * s;
   const box = machineReveal(F, 'ingenia', x, y, s, u, { out, lineDur: 0.5, wipeDur: 0.5, restLines: 0.1, filter: 'brightness(0.9) contrast(1.05) saturate(0.85)' });
-  if (!box) return;
-  const a = 1 - out;
-  callout(F, x + box.w * 0.62, y + box.h * 0.12, x + box.w + 70, y - 36, [
-    ['PHILIPS INGENIA 3.0T EVOLUTION'],
-    ['SMARTSPEED · UP TO 3× FASTER'],
-  ], { t: u - 0.7, a, glow: true, glowRgb: C.LUMI });
-  callout(F, x + box.w * 0.16, y + box.h * 0.62, x - 70, y + box.h + 40, [
-    ['128-SLICE CT'],
-    ['DUAL-ENERGY · LOW DOSE'],
-  ], { t: u - 1.0, a });
+  void box; // named by the nameplate in S01.draw
 }
 
 // ---------------------------------------------------------------------------

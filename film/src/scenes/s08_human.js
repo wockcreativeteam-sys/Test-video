@@ -2,9 +2,11 @@
 import { C } from '../palette.js';
 import { E, clamp, env, lerp, seg } from '../engine/util.js';
 import { text } from '../engine/type.js';
+import { label } from '../engine/annot.js';
 import { glowDot } from '../engine/lines.js';
 import { BABY, pulse } from '../timeline.js';
 import { halo } from './common.js';
+import { healwave, healPoint, HW_DAY } from '../engine/healwave.js';
 
 let STROKES = null; // [{P (screen xy), len, t0, t1}]
 const SC = 1.32, OX = 300, OY = 128;
@@ -82,7 +84,8 @@ export const S08 = {
       const u = clamp((t - s.t0) / (s.t1 - s.t0));
       if (u <= 0) continue;
       const e = E.inOutSine(u);
-      L.poly2(s.P, { rgb: C.INK, a: 0.95 * (1 - out), w: 2.4, to: e, fade: s.edge ? [0, 1] : null });
+      // the healwave draws the newborn's hand, like the brand's calligraphy
+      healwave(F, s.P, { screen: true, palette: HW_DAY, a: 0.95 * (1 - out), to: e, width: 5.5, strands: 5, lw: 1.15, smooth: 10, fade: s.edge ? [0, 1] : null });
       if (u < 1) {
         drawing = true;
         // head position at the drawing front
@@ -109,19 +112,20 @@ export const S08 = {
     const breath = 0.5 + 0.5 * Math.sin((t - 84.5) * 1.6);
     const r = 4.2 + babyBeat * 2.0 + (pre ? breath * 0.8 : 0);
     const a = 1 - seg(t, 95.4, 96.2);
-    halo(F, head[0], head[1], 26 + babyBeat * 30 + (pre ? breath * 8 : 0), C.RED, 0.16 * a);
-    F.ctx.fillStyle = `rgba(${C.RED},${a})`;
-    F.ctx.beginPath();
-    F.ctx.arc(head[0], head[1], r, 0, Math.PI * 2);
-    F.ctx.fill();
-    glowDot(F, head[0], head[1], 22 + babyBeat * 26, C.RED, 0.35 * a);
+    halo(F, head[0], head[1], 26 + babyBeat * 30 + (pre ? breath * 8 : 0), '214,52,132', 0.12 * a);
+    healPoint(F, head[0], head[1], { r, a, day: true, rimScale: 2.3 + babyBeat * 0.6, spin: t * 0.6, g: 22 + babyBeat * 26 });
     // the line, at last
     const ta = env(t, 91.7, 95.6, 0.1, 0.8);
-    if (ta > 0)
+    if (ta > 0) {
       // the answer to the climax line, in the same voice: ink on white
-      text(F, 'IT’S ALREADY HERE.', 960, 980, {
+      text(F, 'EVEN THE SMALLEST.', 960, 930, {
         fam: 'D', wt: 600, size: 72, track: -0.01, align: 'c', rgb: C.INK, a: 0.96 * ta,
         anim: { mode: 'rise', t: t - 91.7, dur: 1.0, stag: 0.03, ease: E.outExpo },
       });
+      // and the technology that keeps the smallest heartbeats going
+      label(F, 'NEONATAL INTENSIVE CARE · GE GIRAFFE · GE LULLABY · SLE 6000 · SLE5000 HFOV', 960, 990, {
+        t: t - 92.5, size: 14, wt: 500, a: 0.9 * ta, rgb: C.BLUE, track: 0.16, align: 'c', stag: 0.006,
+      });
+    }
   },
 };

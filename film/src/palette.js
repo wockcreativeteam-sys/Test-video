@@ -22,5 +22,6 @@ export const G = {
   DAY_E: [0.905, 0.93, 0.962],
   BLACK: [0.0, 0.0, 0.0],
   RED_GLOW: [0.55, 0.05, 0.08],
+  HW_GLOW: [0.5, 0.1, 0.36], // the healwave's magenta, as a background bloom
   BLUE_GLOW: [0.08, 0.2, 0.45],
 };

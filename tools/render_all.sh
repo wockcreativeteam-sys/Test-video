@@ -3,11 +3,13 @@
 #   tools/render_all.sh                 # everything
 #   CHUNKS="5 6" tools/render_all.sh    # re-render only chunks 5 and 6, then re-mux
 #   WORKERS=3 OUT=out/film.mp4 tools/render_all.sh
+#   CHUNK_DIR=out/chunks_b tools/render_all.sh   # render into another folder
 set -euo pipefail
 cd "$(dirname "$0")/.."
 OUT="${OUT:-out/wockhardt_reengineered_1080p.mp4}"
 WORKERS="${WORKERS:-3}"
-TMP="out/chunks"
+TMP="${CHUNK_DIR:-out/chunks}"
+export TMP
 NCH=12
 PER=265 # 12 x 265 = 3180 frames = 106 s @ 30 fps
 mkdir -p "$TMP" "$(dirname "$OUT")"
@@ -21,7 +23,7 @@ for c in $CH; do
   a=$(python3 -c "print(f'{$c * $PER / 30:.4f}')")
   b=$(python3 -c "print(f'{($c + 1) * $PER / 30:.4f}')")
   echo "$c $a $b"
-done | xargs -P "$WORKERS" -L 1 sh -c 'node tools/render.mjs video --from "$1" --to "$2" --out "out/chunks/chunk_$0.mkv" --crf 12 --preset fast > "out/chunks/log_$0.txt" 2>&1 && echo "chunk $0 done" || echo "chunk $0 FAILED"'
+done | xargs -r -P "$WORKERS" -L 1 sh -c 'node tools/render.mjs video --from "$1" --to "$2" --out "$TMP/chunk_$0.mkv" --crf 12 --preset fast > "$TMP/log_$0.txt" 2>&1 && echo "chunk $0 done" || echo "chunk $0 FAILED"'
 
 for c in $(seq 0 $((NCH - 1))); do
   [ -s "$TMP/chunk_$c.mkv" ] || { echo "missing chunk $c"; exit 1; }

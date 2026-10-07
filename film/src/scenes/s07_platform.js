@@ -6,10 +6,11 @@ import { orbit } from '../engine/cam.js';
 import { label, ring } from '../engine/annot.js';
 import { text } from '../engine/type.js';
 import { glowDot, Lines } from '../engine/lines.js';
-import { chapterTag } from './common.js';
+import { chapterTag, nameplate, scrim } from './common.js';
 import { neuroCam, STN_W } from './s06_neuro.js';
 import { drawBody, lifeHead } from './s01_signal.js';
 import { pulse } from '../timeline.js';
+import { healwave, healPoint, HW_HEAD, HW_CORE } from '../engine/healwave.js';
 
 const FLOOR = -0.92;
 export const PATIENT = [0, 0.3, -9.0];
@@ -42,7 +43,9 @@ export function platformCam(t) {
   const roll = lerp(n.roll || 0, 0, E.inOutSine(uA));
   const col = seg(t, 83.65, 84.42, E.inQuart);
   tgt = v3.lerp(tgt, [0, FLOOR, 0], col);
-  const shift = [0, lerp(0, 150, seg(t, 80.0, 81.6, E.inOutSine)) * (1 - col)];
+  // the hospital slides right while the technology roll call runs down the left
+  const slide = E.inOutSine(seg(t, 73.1, 74.1)) * (1 - E.inOutSine(seg(t, 78.2, 79.3)));
+  const shift = [330 * slide, lerp(0, 205, seg(t, 80.0, 81.6, E.inOutSine)) * (1 - col)];
   return { pos: orbit(tgt, yaw, pitch, Math.exp(ld)), tgt, fov: lerp(40, 42, uA), roll };
 }
 
@@ -187,28 +190,86 @@ export const S07 = {
     drawBody(F, 0.65 * bodyA, { fog: [2, 400, 0.4], organs: camD < 30 });
     const hp = lifeHead(t);
     const pp = F.cam.p(hp[0], hp[1], hp[2]);
-    if (pp) L.head(pp[0], pp[1], { r: 2.4 + beat * 1.6, rgb: C.RED, core: '255,226,226', g: 26 + beat * 60, gi: 0.9, a: 1 });
+    if (pp) L.head(pp[0], pp[1], { r: 2.4 + beat * 1.6, rgb: HW_HEAD, core: HW_CORE, g: 26 + beat * 60, gi: 0.9, a: 1 });
     // scale-aware layers
     const orA = env(t, 69.8, 84.0, 0.8, 0.6) * clamp(1.6 - Math.log10(camD / 60) * 0.9);
     const hospA = env(t, 72.6, 84.0, 0.8, 0.5) * clamp(2.4 - Math.log10(camD / 300) * 0.8);
     const netA = env(t, 79.6, 84.4, 0.6, 0.3);
     if (orA > 0.01) drawOR(F, t, orA * (1 - collapse));
-    if (hospA > 0.01) drawHospital(F, t, hospA * (1 - collapse), beat);
+    if (hospA > 0.01) drawHospital(F, t, hospA * (1 - collapse) * (1 - 0.55 * rollA(t)), beat);
     if (netA > 0.01) drawNetwork(F, t, netA, camD, beat);
-    // the climax line
+    nameplate(F, 'INTEGRATED OPERATING THEATRE', 'CREA OR INTEGRATION', 'OLYMPUS VISERA ELITE III 4K · ZEISS MICROSCOPE · MINDRAY A9 · BENQ TRIMAX 650 NS', t - 70.6, 2.7);
+    rollCall(F, t);
+    // the climax line: everything above exists for one person
     const sa = env(t, 80.5, 84.2, 0.1, 0.25);
     if (sa > 0) {
       const s = { fam: 'D', wt: 600, size: 96, track: -0.015, align: 'c', rgb: C.WHITE, a: sa };
-      text(F, 'THE FUTURE OF MEDICINE', 960, 250, { ...s, anim: { mode: 'rise', t: t - 80.5, dur: 0.9, stag: 0.025 } });
-      text(F, 'ISN’T COMING.', 960, 356, { ...s, anim: { mode: 'rise', t: t - 80.8, dur: 0.9, stag: 0.03 } });
+      text(F, 'ALL OF THIS,', 960, 228, { ...s, anim: { mode: 'rise', t: t - 80.5, dur: 0.9, stag: 0.03 } });
+      text(F, 'FOR ONE HEARTBEAT.', 960, 334, { ...s, anim: { mode: 'rise', t: t - 81.1, dur: 0.9, stag: 0.03 } });
     }
-    chapterTag(F, '07', 'THE PLATFORM', t - 70.2, 10.0);
+    chapterTag(F, '07', 'THE CONNECTED HOSPITAL', t - 70.2, 10.0);
   },
 };
 
 // ---------------------------------------------------------------------------
+// the technology roll call: one line per system, in time with the plucks in the score
+export const ROLL = [
+  ['MRI', 'PHILIPS INGENIA 3.0T EVOLUTION'],
+  ['CT', '128-SLICE DUAL-ENERGY CT'],
+  ['ROBOTICS', 'MAKO SMARTROBOTICS'],
+  ['ROBOTICS', 'DA VINCI SURGICAL SYSTEM'],
+  ['THEATRE', 'CREA OR INTEGRATION'],
+  ['THEATRE', 'OLYMPUS VISERA ELITE III 4K'],
+  ['THEATRE', 'ZEISS NEUROSURGICAL MICROSCOPE'],
+  ['THEATRE', 'MINDRAY A9 ANAESTHESIA SYSTEM'],
+  ['THEATRE', 'BENQ TRIMAX 650 NS TABLE'],
+  ['NEURO', 'MEDTRONIC DBS · INTEGRA MAYFIELD'],
+  ['NICU', 'GE GIRAFFE INCUBATOR · GE LULLABY WARMER'],
+  ['NICU', 'SLE 6000 · SLE5000 HFOV VENTILATORS'],
+  ['CRITICAL CARE', 'SERVO-C VENTILATOR · B. BRAUN INFUSOMAT'],
+  ['TRANSPLANT ICU', 'PHILIPS MONITORING · PHILIPS DFM 100'],
+  ['LASER SURGERY', 'AR PHOTONICS TRIPLE-WAVELENGTH DIODE LASER'],
+  ['CSSD', 'STERRAD 100NX PLASMA STERILISATION'],
+  ['DIGITAL', 'SANHAR PAPERLESS HIS'],
+];
+export const ROLL_T0 = 73.9, ROLL_DT = 0.2;
+const rollA = (t) => env(t, 73.5, 78.9, 0.5, 0.6);
+
+function rollCall(F, t) {
+  const a = rollA(t);
+  if (a <= 0) return;
+  F.L.flush();
+  const ctx = F.ctx;
+  const x = 120, xn = 312, y0 = 300, dy = 31;
+  scrim(F, 0, 120, 1100, 860, 0.7 * a, { solid: 'l', featherY: 150, featherX: 420 });
+  label(F, 'WOCKHARDT HOSPITALS · OUR TECHNOLOGY', x, y0 - 62, { t: t - 73.6, size: 13, wt: 500, a: 0.95 * a, rgb: C.LUMI, track: 0.2 });
+  // spine grows with the list
+  const n = ROLL.length;
+  const shown = clamp((t - ROLL_T0) / (ROLL_DT * (n - 1) + 0.2));
+  ctx.strokeStyle = `rgba(${C.STEEL},${0.6 * a})`;
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(xn - 18, y0 - 26);
+  ctx.lineTo(xn - 18, y0 - 26 + (n - 1) * dy * E.outCubic(shown) + 8);
+  ctx.stroke();
+  ROLL.forEach(([dept, name], i) => {
+    const tt = t - (ROLL_T0 + i * ROLL_DT);
+    if (tt <= 0) return;
+    const y = y0 + i * dy;
+    const newest = clamp(1 - (tt - 0.3) / 0.6); // the arriving line flashes white, then settles
+    label(F, dept, x, y - 2, { t: tt, size: 11, wt: 500, a: 0.75 * a, rgb: C.STEEL, track: 0.16 });
+    text(F, name, xn, y, {
+      fam: 'D', wt: 500, size: 24, track: 0.005, rgb: newest > 0 ? C.WHITE : C.ICE, a: a * (0.86 + 0.14 * newest),
+      anim: { mode: 'rise', t: tt, dur: 0.5, stag: 0.01, ease: E.outExpo },
+    });
+  });
+}
+
+// ---------------------------------------------------------------------------
 function drawOR(F, t, a) {
   const L = F.L;
+  // the theatre's own labels are for the close view; they bow out as the hospital takes the frame
+  const labelA = 1 - seg(t, 73.0, 73.8);
   const draw = seg(t, 69.8, 71.6, E.inOutCubic);
   // walls (double line), door
   L.poly(rectP(-35, -45, 35, 20), { rgb: C.ICE, a: 0.7 * a, w: 1.4, to: draw });
@@ -233,7 +294,7 @@ function drawOR(F, t, a) {
     const p = F.cam.p(x, FLOOR + 0.02, z);
     if (!p) continue;
     ring(F, p[0], p[1], Math.max(4, 1.6 * p[3]) * st, { rgb: C.WHITE, a: 0.85 * a, w: 1.2 });
-    label(F, name, p[0] + 12, p[1] - 10, { t: t - 70.8, size: 11, a: 0.75 * a });
+    label(F, name, p[0] + 12, p[1] - 10, { t: t - 70.8, size: 11, a: 0.75 * a * labelA });
   }
   const lab = [
     ['BENQ TRIMAX 650 NS', -3.0, 1.6, 71.2],
@@ -244,7 +305,7 @@ function drawOR(F, t, a) {
   ];
   for (const [s, x, z, ts] of lab) {
     const p = F.cam.p(x, FLOOR, z);
-    if (p) label(F, s, p[0] + 8, p[1] + 16, { t: t - ts, size: 11, wt: 600, a: 0.85 * a, rgb: C.ICE });
+    if (p) label(F, s, p[0] + 8, p[1] + 16, { t: t - ts, size: 11, wt: 600, a: 0.85 * a * labelA, rgb: C.ICE });
   }
 }
 
@@ -261,9 +322,22 @@ function drawHospital(F, t, a, beat) {
   const tr = seg(t, 73.6, 75.4, E.inOutSine);
   for (const x of HOSP.traces) L.poly(x.P, { rgb: C.LUMI, a: 0.22 * a, w: 1.0, to: tr, cum: x.cum });
   // the patient's journey (red)
-  const j = seg(t, 74.4, 78.6, E.inOutSine);
-  L.poly(HOSP.journey, { rgb: C.RED, a: 0.95 * a, w: 2, to: j, cum: HOSP.journeyCum, layer: 2, head: j > 0 && j < 1 ? { r: 3, rgb: C.RED, core: '255,226,226', g: 40, gi: 1 } : null });
+  const j = seg(t, 78.2, 80.3, E.inOutSine);
+  healwave(F, HOSP.journey, { a: 0.95 * a, to: j, width: 16, strands: 9, lw: 1.35, twist: 2, phase: -t * 0.9, smooth: 14, head: j > 0 && j < 1 ? { r: 3, g: 40, gi: 1 } : null });
   L.flush();
+  // one record travels with the patient
+  const ja = env(t, 78.4, 80.6, 0.3, 0.4) * a;
+  if (ja > 0 && j > 0) {
+    const cum = HOSP.journeyCum, P = HOSP.journey, total = cum[cum.length - 1];
+    let k = 0;
+    while (k < cum.length - 2 && cum[k + 1] < j * total) k++;
+    const u = (j * total - cum[k]) / Math.max(1e-6, cum[k + 1] - cum[k]);
+    const hp = F.cam.p(lerp(P[k * 3], P[k * 3 + 3], u), lerp(P[k * 3 + 1], P[k * 3 + 4], u), lerp(P[k * 3 + 2], P[k * 3 + 5], u));
+    if (hp) {
+      label(F, 'ONE DIGITAL RECORD', hp[0] + 22, hp[1] - 26, { t: t - 78.4, size: 12, wt: 600, a: ja, rgb: C.WHITE });
+      label(F, 'SANHAR PAPERLESS HIS', hp[0] + 22, hp[1] - 8, { t: t - 78.55, size: 11, a: 0.75 * ja, rgb: C.ICE });
+    }
+  }
   // pulses along traces, synced to the heart
   for (let i = 0; i < HOSP.traces.length; i++) {
     const x = HOSP.traces[i];
@@ -295,7 +369,7 @@ function drawHospital(F, t, a, beat) {
       const img = F.assets.img[name];
       const base = F.cam.p(x, FLOOR, z), top = F.cam.p(x, FLOOR + h, z);
       if (!img || !base || !top) return;
-      const tb = 74.0 + idx * 0.22;
+      const tb = ROLL_T0 + idx * ROLL_DT;
       const born = clamp((t - tb) / 0.45);
       if (born <= 0) return;
       // roll call: each machine swells as it arrives in its department, then settles
@@ -359,8 +433,9 @@ function drawNetwork(F, t, a, camD, beat) {
     if (!p) return;
     const b = 0.6 + 0.4 * beat;
     const isHome = i === 0;
-    L.head(p[0], p[1], { r: 3.2 + beat * 2, rgb: isHome ? C.RED : C.LUMI, core: '255,255,255', g: (40 + beat * 50) * b, gi: 0.9 * a, a });
-    ring(F, p[0], p[1], 10 + beat * 8, { rgb: isHome ? C.RED : C.ICE, a: 0.6 * a, w: 1 });
+    if (isHome) healPoint(F, p[0], p[1], { r: 3.2 + beat * 2, a, rimScale: 3.4 + beat, spin: t * 0.8, g: (40 + beat * 50) * b });
+    else L.head(p[0], p[1], { r: 3.2 + beat * 2, rgb: C.LUMI, core: '255,255,255', g: (40 + beat * 50) * b, gi: 0.9 * a, a });
+    ring(F, p[0], p[1], 10 + beat * 8, { rgb: isHome ? HW_HEAD : C.ICE, a: 0.6 * a, w: 1 });
     const dy = i === 1 ? -26 : 26;
     const la = a * (1 - seg(t, 83.4, 83.8));
     label(F, nd.name, p[0] + 18, p[1] + dy, { t: t - 80.6 - i * 0.12, size: 13, wt: 600, a: la, rgb: C.WHITE });
@@ -370,8 +445,9 @@ function drawNetwork(F, t, a, camD, beat) {
   if (col > 0) {
     const h = F.cam.p(0, FLOOR, 0);
     if (h) {
-      glowDot(F, h[0], h[1], 60 + 520 * col * col, C.RED, 0.9 * col);
-      L.head(h[0], h[1], { r: 3 + 9 * col, rgb: C.RED, core: '255,235,235', g: 80 + 200 * col, gi: 1, a: 1 });
+      // everything collapses into one point: the healwave, wound tight
+      glowDot(F, h[0], h[1], 60 + 520 * col * col, HW_HEAD, 0.9 * col);
+      healPoint(F, h[0], h[1], { r: 3 + 9 * col, a: 1, rimScale: 2.4 + 2.2 * col, spin: t * 2.5, g: 80 + 200 * col, gi: 1 });
     }
   }
 }

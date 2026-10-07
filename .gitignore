@@ -1,5 +1,5 @@
 # render intermediates (regenerable)
-out/chunks/
+out/chunks*/
 out/stills/
 film/audio/score.wav
 node_modules/

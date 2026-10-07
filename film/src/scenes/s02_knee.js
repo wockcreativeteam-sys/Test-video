@@ -5,7 +5,7 @@ import { E, clamp, env, lerp, seg, v3, TAU } from '../engine/util.js';
 import { orbit } from '../engine/cam.js';
 import { label, callout, ruler } from '../engine/annot.js';
 import { text } from '../engine/type.js';
-import { machineReveal, statement, chapterTag, drawArm } from './common.js';
+import { machineReveal, headline, nameplate, chapterTag, drawArm } from './common.js';
 import { signalCam, KNEE, drawLifeLine } from './s01_signal.js';
 import { buildKnee, buildKneeSagittal, toWorld, KX, FEMUR_TIP, DISTAL_CUT, TIBIA_TOP, TIBIAL_CUT } from '../knee.js';
 
@@ -73,10 +73,10 @@ export const S02 = {
     labels(F, t);
     plan(F, t);
     robot(F, t, millX);
-    statement(F, 'PLAN BEFORE YOU TOUCH.', 120, 214, t - 28.2, 2.6);
-    statement(F, 'PRECISION,', 120, 880, t - 31.7, 3.0);
-    statement(F, 'DOWN TO THE MILLIMETRE.', 120, 966, t - 31.86, 2.84);
-    chapterTag(F, '02', 'PLAN · PRECISION', t - 26.8, 9.0);
+    headline(F, ['YOUR KNEE, REBUILT IN 3D', 'BEFORE THE FIRST CUT.'], t - 28.2, 2.75);
+    headline(F, ['THE CUT STAYS INSIDE THE PLAN.', 'TO THE MILLIMETRE.'], t - 31.7, 2.95);
+    nameplate(F, 'ROBOTIC-ARM ASSISTED JOINT REPLACEMENT', 'MAKO SMARTROBOTICS', 'CT-BASED 3D PLAN · HAPTIC BOUNDARY · STRYKER', t - 28.6, 6.6);
+    chapterTag(F, '02', 'ROBOTIC ORTHOPAEDICS', t - 26.8, 9.0);
   },
 };
 
@@ -132,7 +132,7 @@ function plan(F, t) {
       if (u0 > axA) break;
       const A = toWorld(lerp(p0[0], p1[0], u0), lerp(p0[1], p1[1], u0), lerp(p0[2], p1[2], u0));
       const B = toWorld(lerp(p0[0], p1[0], Math.min(u1, axA)), lerp(p0[1], p1[1], Math.min(u1, axA)), lerp(p0[2], p1[2], Math.min(u1, axA)));
-      L.poly(new Float32Array([...A, ...B]), { rgb: C.RED, a: 0.55 * a, w: 1 });
+      L.poly(new Float32Array([...A, ...B]), { rgb: C.LUMI, a: 0.6 * a, w: 1 });
     }
   }
   // resection planes
@@ -238,7 +238,7 @@ function robot(F, t, millX) {
   const mu = t - 31.3;
   const mout = seg(t, 35.0, 35.6);
   const box = machineReveal(F, 'mako_b', 1590, 118, 1.3, mu, { out: mout, filter: 'brightness(0.92) contrast(1.05)', pool: C.LUMI });
-  if (box) callout(F, box.x + box.w * 0.3, box.y + box.h * 0.62, box.x - 90, box.y + box.h + 30, [['MAKO SMARTROBOTICS'], ['ROBOTIC-ARM ASSISTED SURGERY']], { t: mu - 0.9, a: 1 - mout });
+  void box; // named by the nameplate
   void text;
   void TIBIA_TOP;
 }

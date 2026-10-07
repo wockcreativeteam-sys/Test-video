@@ -2,14 +2,15 @@
 import { C } from '../palette.js';
 import { E, clamp, env, lerp, seg, v3, TAU } from '../engine/util.js';
 import { orbit } from '../engine/cam.js';
-import { label, callout, reticle } from '../engine/annot.js';
+import { label, reticle } from '../engine/annot.js';
 import { glowDot, Lines } from '../engine/lines.js';
-import { statement, chapterTag } from './common.js';
+import { headline, nameplate, chapterTag } from './common.js';
 import { oncoCam, HEART_W } from './s04_onco.js';
 import { drawBody, drawLifeLine, lifeHead } from './s01_signal.js';
 import { buildHeart, buildCoronaries, buildHelix } from '../thorax.js';
 import { pulse, HEART } from '../timeline.js';
 import { ecg } from '../signals.js';
+import { healwave, HW_HEAD, HW_CORE } from '../engine/healwave.js';
 
 let HS = null, COR = null, HX = null, HXcum = null;
 const U_STEN = 0.4;
@@ -59,8 +60,8 @@ export const S05 = {
     const wind = E.inOutSine(clamp((t - 52.2) / 2.2));
     if (t < 53.0) drawLifeLine(F, t, 0.9 * (1 - seg(t, 52.2, 53.0)), { dotOnly: true });
     if (wind > 0) {
-      const recede = lerp(1, 0.42, seg(t, 54.2, 55.4, E.inOutSine));
-      L.poly(HX, { rgb: C.RED, a: 0.85 * recede * (1 - leave), w: 1.3, layer: 2, to: wind, cum: HXcum, xf, head: wind < 1 ? { r: 2.6, rgb: C.RED, core: '255,226,226', g: 36, gi: 0.9 } : null, fade: [0.55, 1] });
+      const recede = lerp(1, 0.72, seg(t, 54.2, 55.4, E.inOutSine));
+      healwave(F, HX, { a: 0.95 * recede * (1 - leave), width: 20, strands: 10, lw: 1.3, twist: 3, phase: -t * 0.9, smooth: 14, to: wind, xf, fade: [0.55, 1], head: wind < 1 ? { r: 2.6, g: 36, gi: 0.9 } : null });
     }
     // anatomy inside
     const anat = seg(t, 53.4, 54.6, E.inOutCubic);
@@ -86,17 +87,13 @@ export const S05 = {
     flow(F, t, xf, leave);
     stenosis(F, t, xf, stent, leave);
     ecgStrip(F, t);
-    callout(F, ...anchor(F, 0.56, 0.3), 1460, 300, [['128-SLICE CARDIAC CT'], ['CORONARY ANGIOGRAPHY']], { t: t - 54.2, a: env(t, 54.2, 58.6, 0.3, 0.5) });
-    statement(F, 'WHEN EVERY BEAT COUNTS.', 120, 214, t - 55.7, 3.6);
-    chapterTag(F, '05', 'CARDIAC', t - 52.6, 7.6);
+    headline(F, ['FOUND BEFORE IT BECAME', 'A HEART ATTACK.'], t - 55.2, 3.4);
+    // the plate sits above the ECG strip
+    nameplate(F, 'CT CORONARY ANGIOGRAPHY', '128-SLICE CARDIAC CT', 'NON-INVASIVE · CORONARY ARTERIES IN 3D', t - 54.0, 4.6, { y: 800 });
+    chapterTag(F, '05', 'CARDIAC CARE', t - 52.6, 7.6);
     void lifeHead;
   },
 };
-
-function anchor(F, u, v) {
-  const p = F.cam.p(HEART_W[0] + 0.25, HEART_W[1] + 0.3, HEART_W[2] + 0.1);
-  return p ? [p[0], p[1]] : [960, 540];
-}
 
 function flow(F, t, xf, leave) {
   const a = env(t, 54.6, 60.4, 0.4, 0.6) * (1 - leave);
@@ -167,8 +164,10 @@ function ecgStrip(F, t) {
     P[i * 2] = x;
     P[i * 2 + 1] = y - ecg(tau, 0) * 46;
   }
-  F.L.poly2(P, { rgb: C.RED, a: 0.85 * a, w: 1.3, layer: 2, fade: [0, 1] });
-  F.L.head(x1, y - ecg(t, 0) * 46, { r: 2.4, rgb: C.RED, core: '255,226,226', g: 26, gi: 0.8 * a, a });
+  const fan = new Float32Array(N);
+  for (let i = 0; i < N; i++) fan[i] = Math.min(1, Math.abs(ecg(t - (x1 - (x0 + ((x1 - x0) * i) / (N - 1))) / pxPerS, 0)));
+  healwave(F, P, { screen: true, a: 0.9 * a, width: 18, strands: 10, lw: 1.3, twist: 1.2, phase: -t * 0.6, smooth: 50, fade: [0, 1], spread: (u, i) => 0.7 + 1.0 * fan[i] });
+  F.L.head(x1, y - ecg(t, 0) * 46, { r: 2.4, rgb: HW_HEAD, core: HW_CORE, g: 26, gi: 0.8 * a, a });
   F.L.flush();
   const irregular = t > 54.0 && t < 57.0;
   label(F, 'ECG · LEAD II', x0, y - 70, { t: t - 53.3, size: 11, a: 0.6 * a, rgb: C.STEEL });

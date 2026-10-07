@@ -4,11 +4,12 @@
 import { C } from '../palette.js';
 import { E, clamp, env, lerp, seg, v3, TAU, fbm1 } from '../engine/util.js';
 import { orbit } from '../engine/cam.js';
-import { label, callout } from '../engine/annot.js';
-import { machineReveal, statement, chapterTag, drawArm } from './common.js';
+import { label } from '../engine/annot.js';
+import { machineReveal, headline, nameplate, chapterTag, drawArm } from './common.js';
 import { kneeCam, ABD } from './s02_knee.js';
 import { drawBody, drawLifeLine } from './s01_signal.js';
 import { topY, CM } from '../anatomy.js';
+import { healwave } from '../engine/healwave.js';
 
 export const TGT = [0.25, 0.86, -10.0];
 const BOOM = [0.1, 4.1, -10.6];
@@ -69,10 +70,10 @@ export const S03 = {
     const pu = t - 36.9;
     const pout = seg(t, 38.5, 39.1);
     const box = machineReveal(F, 'davinci_arms', 1430, 690, 1.2, pu, { out: pout, lineDur: 0.4, restLines: 0, filter: 'brightness(0.9) contrast(1.05) saturate(0.9)' });
-    if (box) callout(F, box.x + box.w * 0.84, box.y + box.h * 0.08, box.x + box.w * 0.62, box.y - 150, [['DA VINCI SURGICAL SYSTEM'], ['3D HD VISION · WRISTED INSTRUMENTS']], { t: pu - 0.6, a: 1 - pout });
-    statement(F, 'HUMAN JUDGEMENT.', 120, 214, t - 38.3, 3.3);
-    statement(F, 'MACHINE PRECISION.', 120, 300, t - 38.95, 2.65);
-    chapterTag(F, '03', 'HUMAN + MACHINE', t - 37.2, 6.6);
+    void box; // named by the nameplate
+    headline(F, ['STEADIER THAN ANY HAND.', 'GUIDED BY ONE.'], t - 38.3, 3.3);
+    nameplate(F, 'MINIMALLY INVASIVE ROBOTIC SURGERY', 'DA VINCI SURGICAL SYSTEM', '3D HD VISION · WRISTED INSTRUMENTS · MOTION SCALING · TREMOR FILTRATION', t - 37.7, 4.5);
+    chapterTag(F, '03', 'ROBOTIC SURGERY', t - 37.2, 6.6);
   },
 };
 
@@ -151,7 +152,7 @@ function scaling(F, t) {
   const s1 = suturePhase(t);
   const N = 420;
   // the surgeon's hand: large, with physiological tremor (~9 Hz)
-  const hx = 440, hy = 700, sx = 300, sy = 110;
+  const hx = 440, hy = 604, sx = 300, sy = 110; // clear of the nameplate below
   const hand = new Float32Array(N * 2);
   for (let i = 0; i < N; i++) {
     const s = (i / (N - 1)) * s1;
@@ -162,7 +163,7 @@ function scaling(F, t) {
     hand[i * 2] = hx + q[0] * sx + jx;
     hand[i * 2 + 1] = hy + q[1] * sy + jy;
   }
-  L.poly2(hand, { rgb: C.RED, a: 0.95 * a, w: 1.6, layer: 2, fade: [0.15, 1], head: s1 > 0 && s1 < 1 ? { r: 2.6, rgb: C.RED, core: '255,226,226', g: 34, gi: 0.85 } : null });
+  healwave(F, hand, { screen: true, a: 0.95 * a, width: 22, strands: 10, lw: 1.5, twist: 1.4, phase: -t * 0.8, smooth: 26, fade: [0.15, 1], head: s1 > 0 && s1 < 1 ? { r: 2.6, g: 34, gi: 0.85 } : null });
   // the instrument: the same path, 3:1, filtered
   const k = F.cam.p(...TGT);
   if (!k) return;

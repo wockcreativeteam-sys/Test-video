@@ -7,6 +7,7 @@ import { text, layout } from '../engine/type.js';
 import { glowDot } from '../engine/lines.js';
 import { WRIST } from './s08_human.js';
 import { halo } from './common.js';
+import { healwave, healPoint, HW_DAY } from '../engine/healwave.js';
 
 const BRAND_RED = '214,28,40';
 let LOGO = null;
@@ -39,21 +40,21 @@ export const S09 = {
     const beat = Math.exp(-Math.max(0, t - 101.2) * 6) * (t > 101.2 ? 1 : 0) + Math.exp(-Math.max(0, t - 101.48) * 7) * (t > 101.48 ? 0.6 : 0);
     // hairline
     if (open > 0) {
-      ctx.strokeStyle = `rgba(${C.INK},${0.85})`;
-      ctx.lineWidth = 1.3;
-      ctx.beginPath();
-      ctx.moveTo(cx - halfW, ly);
-      ctx.lineTo(cx + halfW, ly);
-      ctx.stroke();
+      // the line under the name is the healwave
+      const P = new Float32Array(2 * 120);
+      for (let i = 0; i < 120; i++) {
+        const u = i / 119;
+        P[i * 2] = cx - halfW + 2 * halfW * u;
+        P[i * 2 + 1] = ly + Math.sin(u * Math.PI * 2 + t * 0.9) * 3 * open;
+      }
+      healwave(F, P, { screen: true, palette: HW_DAY, a: 0.95, width: 12, strands: 7, lw: 1.3, smooth: 40, twist: 1, phase: -t * 0.5, spread: (u) => 0.55 + 0.45 * Math.sin(Math.PI * u) });
+      F.L.flush();
     }
     // the point rides to the end of the line and stays there as the final heartbeat
     const ride = E.inOutCubic(seg(t, 97.0, 98.0));
     const dotX = lerp(px, cx + halfW + 22, ride), dotY = py;
-    halo(F, dotX, dotY, 24 + beat * 44, C.RED, 0.14 + 0.16 * beat);
-    ctx.fillStyle = `rgba(${C.RED},1)`;
-    ctx.beginPath();
-    ctx.arc(dotX, dotY, 4.2 + beat * 2.6, 0, Math.PI * 2);
-    ctx.fill();
+    halo(F, dotX, dotY, 24 + beat * 44, '214,52,132', 0.1 + 0.14 * beat);
+    healPoint(F, dotX, dotY, { r: 4.2 + beat * 2.6, a: 1, day: true, rimScale: 2.3 + beat, spin: t * 0.6, g: 22 + beat * 30 });
 
     if (LOGO) {
       const a = seg(t, 96.6, 97.6, E.inOutCubic);

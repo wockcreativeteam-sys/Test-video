@@ -367,12 +367,18 @@ while tcur < 16.8:
     dens = np.interp(tcur, [9.9, 12.5, 14.5, 16.8], [6, 70, 60, 4])
     tcur += RNG.exponential(1 / dens)
     B["fx"].add(click(RNG.uniform(2200, 9000), RNG.uniform(0.12, 0.32), 0.003), tcur, 1.0, RNG.uniform(-0.8, 0.8))
-# type reveals — a soft breath of air with every statement
-for ts in [3.4, 17.3, 23.3, 28.2, 31.7, 38.3, 47.5, 55.7, 80.5, 91.7]:
+# type reveals — a soft breath of air with every headline
+for ts in [3.4, 6.6, 18.8, 22.9, 28.2, 31.7, 38.3, 46.2, 48.9, 55.2, 64.4, 80.5, 91.7]:
     B["air"].add(whoosh(0.9, 1800, 7000, 0.04, "arch"), ts - 0.15, 1.0, 0.0)
-# the split-flap roll SECOND -> DECISION
-for k in range(6):
-    B["fx"].add(click(3600 + k * 400, 0.35, 0.002), 6.6 + k * 0.07, 1.0, 0.1)
+# technology nameplates register with a quiet double tick
+for ts in [11.2, 18.95, 23.05, 28.6, 37.7, 45.6, 54.0, 63.6, 70.6, 78.4]:
+    for j, f in enumerate((5200, 7400)):
+        B["fx"].add(click(f, 0.22, 0.0014), ts + 0.12 + j * 0.055, 1.0, -0.35)
+# the heartbeat counter runs up to 100,000 like a mechanical register, slowing as it lands
+u = np.linspace(0.02, 0.98, 16)
+for k, uu in enumerate(u):
+    ts = 3.75 + 1.5 * (-np.log2(1 - uu) / 10.0)  # inverse of outExpo
+    B["fx"].add(click(4200 + k * 90, 0.16 * (1 - 0.5 * uu), 0.0012), ts, 1.0, 0.15)
 
 print("scan…")
 # --- MRI gradient rhythm (the machine becomes the rhythm section), 18–22.2
@@ -556,9 +562,10 @@ for i, ts in enumerate(np.arange(70.8, 72.2, 0.2)):
     B["fx"].add(blip(mtof(86 + (i % 3) * 3), 0.05, 0.03), ts, 1.0, 0.5 - i * 0.15)
 # the network boots, then the machines arrive one by one (roll call, one pluck each)
 B["fx"].add(whoosh(1.6, 600, 4000, 0.04, "arch"), 73.6, 1.0, 0.0)
-for i in range(10):
-    m = [74, 77, 81, 84, 86, 89, 91, 93, 96, 98][i]
-    B["music"].add(fm_pluck(mtof(m), 0.6, 0.075, 1.2), 74.0 + i * 0.22, 1.0, -0.7 + i * 0.155)
+# 17 systems in the on-screen roll call: rise, breathe, rise to the top
+ROLL = [74, 77, 81, 84, 86, 89, 91, 93, 96, 93, 91, 89, 86, 89, 91, 93, 98]
+for i, m in enumerate(ROLL):
+    B["music"].add(fm_pluck(mtof(m), 0.6, 0.07, 1.2), 73.9 + i * 0.2, 1.0, -0.7 + i * 0.0875)
 for k, (m, ts) in enumerate([(62, 74.4), (65, 75.45), (69, 76.5), (74, 77.55)]):
     l, r = pad([m, m + 12], 1.4, 0.09, attack=0.15, release=0.8, cutoff=2600, kind="tri")
     B["pad"].add_st(l, r, ts)

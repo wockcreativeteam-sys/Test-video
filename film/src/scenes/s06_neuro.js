@@ -5,7 +5,7 @@ import { orbit } from '../engine/cam.js';
 import { label, callout } from '../engine/annot.js';
 import { text } from '../engine/type.js';
 import { glowDot, Lines } from '../engine/lines.js';
-import { chapterTag } from './common.js';
+import { chapterTag, headline, nameplate } from './common.js';
 import { cardiacCam, HEAD_W } from './s05_cardiac.js';
 import { drawBody, drawLifeLine } from './s01_signal.js';
 import { buildBrain, buildTracts, buildFrame, buildNeuron, entryPoint, STN, toW } from '../brain.js';
@@ -120,7 +120,11 @@ export const S06 = {
       coords(F, t);
     }
     neuron(F, t);
-    chapterTag(F, '06', 'NEURO · DEEP BRAIN STIMULATION', t - 60.6, 6.4);
+    // right column: the line, the three numbers, the system that reaches them
+    headline(F, ['THREE NUMBERS.', 'ONE STEADY HAND.'], t - 64.4, 2.3, { x: 1300, y: 150, lh: 72, size: 64 });
+    // the plate sits under the target coordinates
+    nameplate(F, 'DEEP BRAIN STIMULATION', 'MEDTRONIC DBS SYSTEM', 'INTEGRA MAYFIELD 3-PIN FIXATION · STEREOTACTIC LOCALISER', t - 63.6, 3.0, { x: 1300 });
+    chapterTag(F, '06', 'NEUROSURGERY', t - 60.6, 6.4);
   },
 };
 
@@ -164,7 +168,7 @@ function frame(F, t) {
   }
   L.flush();
   const p = F.cam.p(...toW(-10.6, 11, 159.5));
-  if (p) callout(F, p[0], p[1], p[0] - 300, p[1] - 40, [['STEREOTACTIC FRAME'], ['3-PIN FIXATION · N-LOCALISER']], { t: t - 63.2, a });
+  if (p) callout(F, p[0], p[1], p[0] - 300, p[1] - 40, [['MAYFIELD HEAD FIXATION'], ['3-PIN · DBS LOCALISER']], { t: t - 63.2, a });
 }
 
 function dbs(F, t) {
@@ -214,7 +218,7 @@ function dbs(F, t) {
 function coords(F, t) {
   const a = env(t, 63.3, 66.7, 0.4, 0.5);
   if (a <= 0) return;
-  const x = 1300, y0 = 300;
+  const x = 1300, y0 = 360;
   label(F, 'TARGET · SUBTHALAMIC NUCLEUS', x, y0 - 70, { t: t - 63.3, size: 13, wt: 600, a });
   label(F, 'RELATIVE TO MID-COMMISSURAL POINT', x, y0 - 48, { t: t - 63.45, size: 11, a: 0.6 * a, rgb: C.STEEL });
   const rows = [

@@ -4,7 +4,7 @@ import { E, clamp, env, lerp, seg, v3, TAU } from '../engine/util.js';
 import { orbit } from '../engine/cam.js';
 import { label, callout, reticle, brackets, ring, dim } from '../engine/annot.js';
 import { glowDot } from '../engine/lines.js';
-import { statement, chapterTag } from './common.js';
+import { headline, nameplate, chapterTag } from './common.js';
 import { davinciCam } from './s03_davinci.js';
 import { drawBody, drawLifeLine } from './s01_signal.js';
 import { buildLungs, buildBronchi, buildNodule, NODULE, W, heart as heartSDF } from '../thorax.js';
@@ -103,8 +103,10 @@ export const S04 = {
     characterise(F, t);
     target(F, t);
     monitor(F, t);
-    statement(F, 'TARGET WHAT MATTERS.', 120, 214, t - 47.5, 3.1);
-    chapterTag(F, '04', 'ONCOLOGY', t - 44.6, 7.8);
+    headline(F, ['CAUGHT AT 6 MM.'], t - 46.2, 2.0);
+    headline(F, ['THE TUMOUR, TARGETED.', 'THE HEART, SPARED.'], t - 48.9, 2.7);
+    nameplate(F, 'TISSUE & MATERIAL CHARACTERISATION', 'DUAL-ENERGY CT', '128 SLICES · LOW DOSE · TELLS TISSUE TYPES APART', t - 45.6, 3.3);
+    chapterTag(F, '04', 'CANCER CARE', t - 44.6, 7.8);
   },
 };
 
@@ -121,7 +123,7 @@ function detect(F, t) {
   reticle(F, sx, sy, 26, { t: t - 44.9, dur: 1.4, a, rgb: lock > 0 ? C.WHITE : C.ICE });
   if (lock > 0) {
     glowDot(F, n[0], n[1], 60, C.LUMI, 0.5 * a * lock);
-    label(F, 'NODULE DETECTED', n[0] + 44, n[1] - 34, { t: t - 46.05, size: 13, wt: 600, a, rgb: C.WHITE });
+    label(F, 'NODULE DETECTED · 6 MM', n[0] + 44, n[1] - 34, { t: t - 46.05, size: 13, wt: 600, a, rgb: C.WHITE });
   }
 }
 
@@ -164,7 +166,7 @@ function characterise(F, t) {
     ctx.stroke();
   }
   ctx.restore();
-  label(F, 'DUAL-ENERGY CT · TISSUE CHARACTERISATION', px, py - 18, { t: t - 46.8, size: 12, wt: 600, a });
+  label(F, 'ATTENUATION BY ENERGY', px, py - 18, { t: t - 46.8, size: 12, wt: 600, a });
   label(F, '40 KEV', px, py + ph + 20, { t: t - 47.0, size: 10.5, a: 0.6 * a, rgb: C.STEEL });
   label(F, '140 KEV', px + pw, py + ph + 20, { t: t - 47.0, size: 10.5, a: 0.6 * a, rgb: C.STEEL, align: 'r' });
   label(F, 'NODULE', px + pw * 0.62, py + ph * 0.46, { t: t - 47.3, size: 10.5, a: 0.9 * a, rgb: C.WHITE });
