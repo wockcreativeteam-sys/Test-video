@@ -36,17 +36,20 @@ film/
     machines/           cut-outs + vector line drawings of the supplied machines
     source/             the supplied images (inputs to the cut-out pipeline)
     human/grip.json     hand-authored line art for the human moment
+    anatomy/brain_lateral.json   cortical surface (gyri, sulci, folia) grown for the neuro chapter
     fonts/              Inter Display (OFL) + Geist Mono (OFL)
   audio/
     score.py            synthesiser: score + sound design, frame-locked via cues.json
-    score.wav           rendered soundtrack
+    score.m4a           soundtrack for the browser preview (score.wav is regenerated on render)
 tools/
   render.mjs            headless Chromium → raw RGBA → ffmpeg (video or stills)
-  render_all.sh         parallel full render + mux
+  render_all.sh         chunked parallel render + mux (+ a <100 MB web version)
   export_cues.mjs       timeline → cues.json for the synthesiser
-  contact.py            contact sheets for review passes
+  contact.py, review_sheets.sh   contact sheets for review passes
   audio_report.py       spectrogram + loudness audit
   assets/prep_machines.py   local background removal (BiRefNet ONNX) + edge tracing
+  anatomy/brain_surface.py  grows the cortex: reaction-diffusion gyri on the brain's lateral
+                            surface, skeletonised into sulci and lifted back onto the 3D SDF
 docs/TREATMENT.md
 ```
 
@@ -63,8 +66,10 @@ Requirements: Node 18+, Playwright with Chromium, ffmpeg, Python 3 with numpy, s
 soundfile, pyloudnorm.
 
 ```bash
-tools/render_all.sh out/wockhardt_reengineered_1080p.mp4 3     # 3 parallel workers
+tools/render_all.sh                          # 12 chunks on 3 workers → out/wockhardt_reengineered_1080p.mp4
+WORKERS=4 CHUNKS="6 7" tools/render_all.sh   # re-render only some chunks, then re-mux
 node tools/render.mjs stills --times 5,22.8,49,84.6 --out out/stills   # review frames
+python3 tools/anatomy/brain_surface.py       # regenerate the cortical surface (deterministic)
 ```
 
 Rendering is deterministic (no clocks, no unseeded randomness): any frame can be re-rendered

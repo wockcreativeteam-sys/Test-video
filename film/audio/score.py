@@ -327,12 +327,12 @@ print("heart…")
 # --- the heart track
 for b in HEART:
     if b >= CUT:
-        g = 0.42  # the intimate final heart (84.5+)
+        g = 0.3 * (0.7 + 0.3 * min(1.0, (b - 86.5) / 3.0))  # the intimate final heart (84.5+)
     else:
         g = level(b, [(0, 0.66), (10, 0.72), (14, 0.5), (18, 0.4), (26, 0.32), (51, 0.32), (52, 0.6), (60, 0.6), (61, 0.3), (68, 0.4), (76, 0.7), (84, 1.0)])
     B["heart"].add(heartbeat(g), b - 0.012, 0.9, 0.0)
 for b in BABY:
-    B["heart"].add(heartbeat(0.26, "baby"), b - 0.006, 0.9, 0.12)
+    B["heart"].add(heartbeat(0.19, "baby"), b - 0.006, 0.9, 0.12)
 # final heartbeat under the end-card dot
 B["heart"].add(heartbeat(0.7), 101.2 - 0.012, 0.9, 0.0)
 
@@ -398,9 +398,9 @@ wh = bp(wh, 80, 900, 2) * np.sin(np.pi * t / 4.0) ** 0.8
 B["fx"].add(wh * 0.06, 17.9, 1.0, 0.0)
 B["fx"].add(whoosh(3.6, 3000, 700, 0.07, "arch"), 18.0, 1.0, 0.2)
 # the ring locks into the bore, the scanner resolves
-B["fx"].add(heartbeat(0.25)[: int(0.3 * SR)], 22.3, 1.0, 0.0)
-B["logo"].add(fm_bell(mtof(81), 3.5, 3.5, 2.2, 0.12), 21.95, 1.0, 0.2)
-B["logo"].add(fm_bell(mtof(88), 3.0, 3.5, 1.6, 0.06), 22.1, 1.0, -0.2)
+B["fx"].add(heartbeat(0.25)[: int(0.3 * SR)], 22.45, 1.0, 0.0)
+B["logo"].add(fm_bell(mtof(81), 3.5, 3.5, 2.2, 0.12), 22.5, 1.0, 0.2)
+B["logo"].add(fm_bell(mtof(88), 3.0, 3.5, 1.6, 0.06), 22.65, 1.0, -0.2)
 
 print("music…")
 # --- pads by chord
@@ -522,6 +522,10 @@ B["logo"].add(fm_bell(mtof(74), 2.4, 2.0, 1.2, 0.07), 57.0, 1.0, -0.2)
 # --- NEURO
 l, r = pad([65, 69, 72, 76], 8.0, 0.1, attack=1.6, release=2.0, cutoff=5200, kind="tri")
 B["pad"].add_st(l, r, 60.3)
+# the scan plane rises through the head, one soft tick per slice band
+B["fx"].add(whoosh(1.7, 250, 3200, 0.03, "rise"), 60.05, 1.0, 0.0)
+for k in range(30):
+    B["fx"].add(click(5200 + k * 70, 0.05 + 0.1 * np.sin(np.pi * k / 29), 0.0012), 60.15 + k * 0.052, 1.0, -0.3 + 0.02 * k)
 tcur = 61.6
 while tcur < 67.0:
     tcur += RNG.exponential(1 / 22)

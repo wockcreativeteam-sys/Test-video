@@ -17,9 +17,12 @@ export function brain(x, y, z) {
   // gyri and sulci: meandering folds
   const g = Math.sin(1.75 * y + 0.85 * Math.sin(1.3 * z + 0.4 * X)) * Math.sin(1.95 * z + 0.75 * Math.sin(1.15 * y));
   d += 0.17 * (Math.abs(g) - 0.45) + 0.05 * Math.sin(3.1 * X + 2.3 * y + 2.9 * z);
-  // cerebellum with folia, pons, brainstem
-  d = smin(d, sdEll(x, y, z, 0, 7.0, 157.3, 4.8, 2.8, 2.8) + 0.05 * Math.sin(z * 11.0), 0.5);
-  d = smin(d, sdEll(x, y, z, 0, 10.3, 156.2, 1.6, 1.3, 1.7), 0.6);
+  // cerebellum (tucked under the occipital lobe, with folia), pons, brainstem
+  // (kept in step with tools/anatomy/brain_surface.py, which grows the cortical surface)
+  const cy = y - 7.0, cz = z - 158.35, ct = 0.16;
+  const yr = cy * Math.cos(ct) - cz * Math.sin(ct), zr = cy * Math.sin(ct) + cz * Math.cos(ct);
+  d = smin(d, sdEll(x, yr, zr, 0, 0, 0, 4.9, 3.25, 2.25) + 0.05 * Math.sin(zr * 11.0), 0.5);
+  d = smin(d, sdEll(x, y, z, 0, 10.75, 156.3, 1.7, 1.6, 1.65), 0.6);
   d = smin(d, sdCap(x, y, z, 0, 9.7, 159.6, 0, 9.0, 149, 1.2), 0.8);
   return d;
 }

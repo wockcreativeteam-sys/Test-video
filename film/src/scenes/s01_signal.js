@@ -67,8 +67,8 @@ export function signalCam(t) {
   if (t <= 21.6) return { pos, tgt, fov: track([[0, 35], [12, 35], [16, 38], [19.6, 36], [21.6, 33]], t) };
   // pull back until the ring is the size of the photographed bore, hold, then log-zoom to the knee
   const B = [0, RING_Y, RING_END];
-  const u1 = seg(t, 21.6, 22.9, E.inOutCubic);
-  const hold = seg(t, 22.9, 24.3, E.inOutSine);
+  const u1 = seg(t, 21.6, 22.55, E.inOutCubic);
+  const hold = seg(t, 22.55, 24.3, E.inOutSine);
   const u2 = seg(t, 24.15, 26.6, E.inOutQuart);
   let yaw = lerp(-8, -16, u1) + 2.5 * hold;
   let pitch = lerp(3, 11, u1) + 1.0 * hold;
@@ -411,7 +411,7 @@ function drawScan(F, t) {
 // registered to the projected ring every frame (bore centre/radius measured in the cut-out).
 const BORE = { x: 166, y: 99, r: 31.5 };
 function drawIngenia(F, t) {
-  const u = t - 21.5;
+  const u = t - 22.2;
   const out = seg(t, 24.2, 25.1);
   const c = F.cam.p(0, RING_Y, RING_END);
   const e = F.cam.p(RING_R, RING_Y, RING_END);
@@ -419,17 +419,17 @@ function drawIngenia(F, t) {
   const rpx = Math.hypot(e[0] - c[0], e[1] - c[1]);
   const s = rpx / BORE.r;
   const x = c[0] - BORE.x * s, y = c[1] - BORE.y * s;
-  const box = machineReveal(F, 'ingenia', x, y, s, u, { out, lineDur: 0.6, wipeDur: 0.55, restLines: 0.1, filter: 'brightness(0.9) contrast(1.05) saturate(0.85)' });
+  const box = machineReveal(F, 'ingenia', x, y, s, u, { out, lineDur: 0.5, wipeDur: 0.5, restLines: 0.1, filter: 'brightness(0.9) contrast(1.05) saturate(0.85)' });
   if (!box) return;
   const a = 1 - out;
   callout(F, x + box.w * 0.62, y + box.h * 0.12, x + box.w + 70, y - 36, [
     ['PHILIPS INGENIA 3.0T EVOLUTION'],
     ['SMARTSPEED · UP TO 3× FASTER'],
-  ], { t: u - 0.85, a, glow: true, glowRgb: C.LUMI });
+  ], { t: u - 0.7, a, glow: true, glowRgb: C.LUMI });
   callout(F, x + box.w * 0.16, y + box.h * 0.62, x - 70, y + box.h + 40, [
     ['128-SLICE CT'],
     ['DUAL-ENERGY · LOW DOSE'],
-  ], { t: u - 1.25, a });
+  ], { t: u - 1.0, a });
 }
 
 // ---------------------------------------------------------------------------

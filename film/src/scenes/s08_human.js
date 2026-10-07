@@ -118,9 +118,10 @@ export const S08 = {
     // the line, at last
     const ta = env(t, 91.7, 95.6, 0.1, 0.8);
     if (ta > 0)
-      text(F, "IT'S ALREADY HERE.", 960, 958, {
-        fam: 'D', wt: 300, size: 34, track: 0.32, align: 'c', rgb: C.INK, a: 0.95 * ta,
-        anim: { mode: 'blur', t: t - 91.7, dur: 1.0, stag: 0.04, blurPx: 8 },
+      // the answer to the climax line, in the same voice: ink on white
+      text(F, 'IT’S ALREADY HERE.', 960, 980, {
+        fam: 'D', wt: 600, size: 72, track: -0.01, align: 'c', rgb: C.INK, a: 0.96 * ta,
+        anim: { mode: 'rise', t: t - 91.7, dur: 1.0, stag: 0.03, ease: E.outExpo },
       });
   },
 };

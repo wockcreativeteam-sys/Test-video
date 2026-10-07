@@ -58,7 +58,10 @@ export const S03 = {
   },
   draw(F, lt, t) {
     const ctxA = env(t, 35.7, 44.4, 0.9, 0.9);
-    drawBody(F, ctxA, { focusZ: -10.4, focusR: 5, edgeA: 0.2, fog: [3, 18, 0.1] });
+    // on the way in and out a narrow scan window rides with the camera, so the flight up
+    // the body reads as slices passing by rather than a wall of rings
+    const travel = Math.max(1 - seg(t, 37.0, 38.3, E.inOutSine), seg(t, 41.7, 43.4, E.inOutSine));
+    drawBody(F, ctxA, { focusZ: lerp(-10.4, F.cam.tgt[2], travel), focusR: lerp(5, 1.3, travel), edgeA: lerp(0.2, 0, travel), fog: [3, 18, 0.1] });
     drawLifeLine(F, t, 0.8 * ctxA, { dotOnly: true });
     F.L.flush();
     arms(F, t);
@@ -66,7 +69,7 @@ export const S03 = {
     const pu = t - 36.9;
     const pout = seg(t, 38.5, 39.1);
     const box = machineReveal(F, 'davinci_arms', 1430, 690, 1.2, pu, { out: pout, lineDur: 0.4, restLines: 0, filter: 'brightness(0.9) contrast(1.05) saturate(0.9)' });
-    if (box) callout(F, box.x + box.w * 0.3, box.y + box.h * 0.35, box.x - 60, box.y - 50, [['DA VINCI SURGICAL SYSTEM'], ['3D HD VISION · WRISTED INSTRUMENTS']], { t: pu - 0.6, a: 1 - pout });
+    if (box) callout(F, box.x + box.w * 0.84, box.y + box.h * 0.08, box.x + box.w * 0.62, box.y - 150, [['DA VINCI SURGICAL SYSTEM'], ['3D HD VISION · WRISTED INSTRUMENTS']], { t: pu - 0.6, a: 1 - pout });
     statement(F, 'HUMAN JUDGEMENT.', 120, 214, t - 38.3, 3.3);
     statement(F, 'MACHINE PRECISION.', 120, 300, t - 38.95, 2.65);
     chapterTag(F, '03', 'HUMAN + MACHINE', t - 37.2, 6.6);
@@ -134,7 +137,7 @@ function arms(F, t) {
   }
   L.flush();
   drawArm(F, [v3.add(BOOM, [0, 3.0, 0]), BOOM], [0.16], a * clamp(dock * 1.4));
-  if (k) label(F, 'OPERATIVE SITE', k[0] + 26, k[1] + 46, { t: t - 37.6, size: 11, a: 0.7 * env(t, 37.4, 38.4, 0.3, 0.4) });
+  if (k) label(F, 'OPERATIVE SITE', k[0] - 26, k[1] + 58, { t: t - 37.6, size: 11, a: 0.7 * env(t, 37.4, 38.4, 0.3, 0.4), align: 'r' });
 }
 
 function suturePhase(t) {

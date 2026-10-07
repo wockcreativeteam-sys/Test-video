@@ -28,7 +28,8 @@ export function platformCam(t) {
   let ld = lerp(ldA, Math.log(78), uB);
   ld = lerp(ld, Math.log(300), uC);
   ld = lerp(ld, Math.log(1.05e6), uD);
-  let tgt = v3.lerp(STN_W, PATIENT, E.inOutCubic(uA));
+  // the target holds on the cell until the whole brain is in view, then moves to the body
+  let tgt = v3.lerp(STN_W, PATIENT, seg(t, 69.55, 70.9, E.inOutCubic));
   tgt = v3.lerp(tgt, [0, FLOOR, -6], uB);
   tgt = v3.lerp(tgt, [34, FLOOR, 2], uC);
   // the target only leaves the hospital once it has become a point
@@ -199,7 +200,7 @@ export const S07 = {
     if (sa > 0) {
       const s = { fam: 'D', wt: 600, size: 96, track: -0.015, align: 'c', rgb: C.WHITE, a: sa };
       text(F, 'THE FUTURE OF MEDICINE', 960, 250, { ...s, anim: { mode: 'rise', t: t - 80.5, dur: 0.9, stag: 0.025 } });
-      text(F, "ISN'T COMING.", 960, 356, { ...s, anim: { mode: 'rise', t: t - 80.8, dur: 0.9, stag: 0.03 } });
+      text(F, 'ISN’T COMING.', 960, 356, { ...s, anim: { mode: 'rise', t: t - 80.8, dur: 0.9, stag: 0.03 } });
     }
     chapterTag(F, '07', 'THE PLATFORM', t - 70.2, 10.0);
   },

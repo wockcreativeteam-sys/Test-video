@@ -60,30 +60,32 @@ connected system) → Human connection (everything collapses back into one human
   `EVERY SECOND MATTERS.` → `EVERY DECISION MATTERS.` · `SEE DEEPER.` · `UNDERSTAND MORE.` ·
   `PLAN BEFORE YOU TOUCH.` · `PRECISION, DOWN TO THE MILLIMETRE.` · `HUMAN JUDGEMENT.` /
   `MACHINE PRECISION.` · `TARGET WHAT MATTERS.` · `WHEN EVERY BEAT COUNTS.` ·
-  `THE FUTURE OF MEDICINE ISN'T COMING.` · `IT'S ALREADY HERE.` ·
+  `THE FUTURE OF MEDICINE ISN’T COMING.` · `IT’S ALREADY HERE.` ·
   **WOCKHARDT HOSPITALS — TECHNOLOGY FIRST. LIFE ALWAYS.**
-* The ending splits the final thought across the human moment: *"The future of medicine isn't
-  coming."* lands on the network climax; *"It's already here."* lands on a newborn's grip — the
-  future of medicine is a life that is already here.
+* The ending splits the final thought across the human moment: *"The future of medicine isn’t
+  coming."* lands on the network climax (white on night); *"It’s already here."* answers it in the
+  same voice on a newborn's grip (ink on day) — the future of medicine is a life that is already here.
 
-## 5. Shot list (120 BPM grid: 1 bar = 2 s)
+## 5. Shot list (as built — 120 BPM grid: 1 bar = 2 s)
 
 | Time | Chapter | What happens |
 |---|---|---|
-| 0–2 | THE HUMAN | Darkness. Room tone. A red point breathes. |
-| 2–10 | | First heartbeat. A hairline baseline opens. The write-head starts writing a single trace over a precision time-ruler. `EVERY SECOND MATTERS.` — the word *second* rolls to *decision*. Measurements begin to annotate each beat. |
-| 10–15 | SIGNAL | The trace replicates into dozens of physiological signals; the camera tilts and the signals become a 3D field breathing with the heart. |
-| 15–18 | THE INVISIBLE | The field's amplitudes morph into the topography of a reclining body — structured-light scan lines. `SEE DEEPER.` |
-| 18–23 | DIAGNOSE | A 70 cm scan ring travels the body; each slice closes into a full cross-section with organs. Philips Ingenia 3.0T resolves out of the ring; 128-slice dual-energy CT. `UNDERSTAND MORE.` |
-| 23–27 | | Slices segment: soft tissue falls away, bone remains; the camera dives to the knee. |
-| 27–36 | PLAN · PRECISION | Femur and tibia reconstructed; measurements, cut planes, implant outline, the haptic boundary. `PLAN BEFORE YOU TOUCH.` A robotic arm executes only inside the boundary. Millimetre ruler. MAKO SmartRobotics. `PRECISION, DOWN TO THE MILLIMETRE.` |
-| 36–44 | HUMAN + MACHINE | Up the body to the abdomen. The surgeon's hand path (red, with tremor) is scaled 3:1 and filtered into the instrument's path (white). da Vinci. `HUMAN JUDGEMENT.` / `MACHINE PRECISION.` |
-| 44–52 | ONCOLOGY | Lung slices; a reticle detects a nodule; dual-energy characterisation; the nodule becomes a coordinate; vectors converge, organs at risk are protected; follow-up volume falls. `TARGET WHAT MATTERS.` |
-| 52–60 | CARDIAC | The red trace wraps itself into a beating heart model; coronary tree; stenosis found; stent deployed; flow and rhythm restored. `WHEN EVERY BEAT COUNTS.` |
-| 60–68 | NEURO | Brain contours and tractography with travelling signals; stereotactic frame; target coordinates set in huge type; trajectory; DBS electrode; 130 Hz stimulation field. |
-| 68–84 | THE PLATFORM | Continuous pull-out: electrode tip → head → patient on the BenQ table → operating-room blueprint (Mindray A9, Olympus 4K, CREA integration, ZEISS) → hospital floor with the machines standing in their departments (Imaging, OT, ICU, NICU — Giraffe, Lullaby, SLE 6000, Infusomat — CSSD, paperless HIS) → the Wockhardt network: Mumbai Central, Mira Road, Nagpur, Rajkot. Human heartbeat + technological pulse. `THE FUTURE OF MEDICINE ISN'T COMING.` |
-| 84–96 | THE HUMAN, AGAIN | Everything collapses into the red point. Silence. White. The line draws a newborn's hand around a parent's finger. Two heartbeats. `IT'S ALREADY HERE.` |
-| 96–106 | IDENTITY | The line settles into the lockup. **WOCKHARDT HOSPITALS** · `TECHNOLOGY FIRST. LIFE ALWAYS.` |
+| 0–2 | THE HUMAN | Darkness, room tone, one breath. A red point breathes. |
+| 2–10 | | First heartbeat. A hairline baseline opens; the write-head records a single trace over a precision time-ruler (40 ms ticks, labelled seconds). `EVERY SECOND MATTERS.` — *second* rolls to *decision*. R-peaks, RR intervals and live readouts begin to annotate each beat. |
+| 10–15 | SIGNAL | The trace peels into 84 physiological signals (ECG leads, pleth, arterial pressure, respiration, capnography, EEG) that fan into a 3D field breathing with the heart. |
+| 15–18 | THE INVISIBLE | The paper slows to a stop; the signals' amplitudes become the topography of a reclining body (structured-light scan lines). The red trace migrates into the chest and keeps beating there. `SEE DEEPER.` |
+| 18–21.6 | DIAGNOSE | A 70 cm gantry ring with a rotating source and fan beam travels the body; every slice it passes closes into a full cross-section with organs and bone. Slice counter `SLICE 064 / 128`. |
+| 21.6–24.6 | | The camera pulls back until the ring is exactly the size of the bore in the photograph: the Philips Ingenia resolves around it, registered frame by frame — the vector patient now lies on the real scanner's table. Callouts: Ingenia 3.0T Evolution (SmartSpeed), 128-slice dual-energy CT. `UNDERSTAND MORE.` |
+| 24.6–27 | | Log-scale dive into the knee. |
+| 27–36 | PLAN · PRECISION | Femur, tibia, patella and fibula reconstructed from dense slices and labelled. Mechanical axes, distal (9.0 mm) and tibial (8.5 mm, 3° slope) resection planes. `PLAN BEFORE YOU TOUCH.` The haptic boundary appears; a robotic arm (technical illustration) mills only inside it while bone clears under the burr; a millimetre ruler counts the depth; the implant resurfaces in white. MAKO SmartRobotics. `PRECISION, / DOWN TO THE MILLIMETRE.` |
+| 36–44 | HUMAN + MACHINE | Up the body to the abdomen. A four-arm overhead boom docks through ports; instruments converge on the operative site; an endoscope's viewing cone. The surgeon's hand path (red, with physiological tremor) drives the instrument tip, which draws the same suture scaled 3:1 and filtered (white). da Vinci. `HUMAN JUDGEMENT. / MACHINE PRECISION.` |
+| 44–52 | ONCOLOGY | Anterior view: lungs reconstruct, the bronchial tree grows. A reticle hunts and locks on a nodule (`NODULE DETECTED`); dual-energy characterisation panel; the nodule becomes a coordinate; twelve vectors from the upper hemisphere converge — paths through the heart and spinal cord are excluded and both are labelled SPARED; 95% / 50% isodose rings; a response curve falls week by week. `TARGET WHAT MATTERS.` |
+| 52–60 | CARDIAC | The red trace returns and winds itself helically around the heart (as myocardial fibres do), forming it. Coronary tree with flowing blood; an irregular run on the ECG strip; LAD 70% stenosis found; a stent expands and flow resumes; sinus rhythm restored. 128-slice cardiac CT. `WHEN EVERY BEAT COUNTS.` |
+| 60–68.6 | NEURO · DBS | A scan plane rises through the head and the axial slices stack up; out of them the cortex resolves — the lateral silhouette draws on, then the Sylvian fissure and central sulcus, then the gyri fold outward from the insula (grown by reaction-diffusion on the brain's real 3D surface), the cerebellum with its folia tucked beneath. The camera rolls into a true lateral view; tractography and travelling signals inside. Stereotactic frame with N-localisers and a centre-of-arc; the focus racks from the cortex to the target. Target coordinates set as huge numerals: `12.0 / −2.5 / −4.0 MM` relative to the mid-commissural point. Planned trajectory → electrode → four contacts → a 130 Hz stimulation field → macro dive to **one cell** firing. |
+| 68.6–84.4 | THE PLATFORM | One continuous log-scale pull-out: one cell → its fibres → the whole brain → the patient → the operating-room blueprint (BenQ Trimax table, Mindray A9, ZEISS microscope, Olympus 4K, CREA integration; surgeons, anaesthetist and scrub nurse as nodes; every device wired to the integration hub) → the hospital floor, its departments wired to a digital core, the machines arriving one by one in their departments (Ingenia, MAKO, da Vinci, BenQ, Olympus, CREA, GE Giraffe, GE Lullaby, SLE 6000, Infusomat), a red patient journey through imaging → theatre → ICU → the Wockhardt network (Mumbai Central, Mira Road, Nagpur, Rajkot) on a lat/long graticule. `THE FUTURE OF MEDICINE / ISN’T COMING.` The network implodes into a single red point. |
+| 84.45 | — | Hard cut to white. Silence. |
+| 84.5–96 | THE HUMAN, AGAIN | The red point draws, in one ink line, a newborn's fist around a parent's finger, then rests on the baby's wrist, pulsing with the baby's own heartbeat. Two heartbeats, adult and newborn. The first major chord of the film. `IT’S ALREADY HERE.` — set in the same voice as the climax line, ink on white. |
+| 96–106 | IDENTITY | The opening gesture returns on white — a red point, a hairline — and the line opens into **WOCKHARDT HOSPITALS** · `TECHNOLOGY FIRST. LIFE ALWAYS.` A D–A–F♯ sonic logo; the point gives one last heartbeat. |
 
 ## 6. Sound
 

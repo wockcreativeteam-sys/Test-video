@@ -5,7 +5,7 @@ import { G } from './palette.js';
 const NIGHT = {
   bg0: G.NIGHT_C, bg1: G.NIGHT_E, bgC: [0.5, 0.5], bgR: 1.15, bg2: G.BLUE_GLOW, bg2Amt: 0.0,
   bloom: 1.0, glow: 1.0, baseBloom: 0.2, bloomThresh: 0.78, bloomSpread: 0.9,
-  exposure: 1.0, ca: 1.6, vig: 0.8, vigTint: [0.35, 0.4, 0.55], sat: 1.0, grain: 0.032,
+  exposure: 1.0, ca: 1.0, vig: 0.8, vigTint: [0.35, 0.4, 0.55], sat: 1.0, grain: 0.032,
   fadeBlack: 0, fadeWhite: 0, bloomTint: [1, 1, 1], mb: 1,
 };
 const VOID = { ...NIGHT, bg0: [0.012, 0.022, 0.05], bg1: [0.0, 0.004, 0.012], bgR: 0.9 };
