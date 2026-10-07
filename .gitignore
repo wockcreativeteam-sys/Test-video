@@ -9,3 +9,5 @@ __pycache__/
 # full-quality master (~490 MB) exceeds GitHub limits; regenerate with tools/render_all.sh
 out/wockhardt_reengineered_1080p.mp4
 out/*_preview.mp4
+# two-pass encoder logs (transient)
+ffmpeg2pass-*
