@@ -95,3 +95,11 @@ sequence: 128-slice dual-energy CT, ZEISS neurosurgical microscope, Mindray A9, 
 paperless HIS, STERRAD 100NX, DBS stereotactic system, dedicated liver transplant ICU.
 Cut-outs are produced locally (`tools/assets/prep_machines.py`, BiRefNet via onnxruntime);
 no image was uploaded to any third-party service.
+
+## Billboard key visuals
+
+Three options for the 48 × 14 ft bulletin (3.43:1), drawn at 6000 × 1750 px with the film's fonts,
+palette and Healwave (`film/kv/kv.js`): **A** night line-up — *ALL OF THIS, FOR ONE HEARTBEAT.*;
+**B** day blueprint — *THE HOSPITAL, RE-ENGINEERED.*; **C** life at the centre — *TECHNOLOGY FIRST.
+LIFE ALWAYS.* Render with `node tools/render_kv.mjs` → `out/kv/` (PNG masters + JPEGs). The
+wordmark is a stand-in; drop in the registered logo before print.
