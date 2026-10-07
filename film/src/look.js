@@ -65,6 +65,6 @@ export function look(t) {
     if (Array.isArray(vb)) L[k] = vb.map((v, j) => lerp(va[j], v, u));
     else L[k] = lerp(va, vb, u);
   }
-  L.mb = Math.max(1, Math.round(L.mb));
+  L.mb = Math.min(2, Math.max(1, Math.round(L.mb))); // capped for render speed
   return L;
 }
