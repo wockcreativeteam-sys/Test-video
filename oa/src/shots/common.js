@@ -180,12 +180,48 @@ export function textOnPath(F, str, path, n, s0, size, o = {}) {
       const s = s0 + ex * size;
       const f = frame(s);
       const off = ey * size + (q?.dy || 0) - (o.lift || 0);
-      // normal pointing "up" from the path (left of the direction of travel)
-      return [f[0] + f[3] * off, f[1] - f[2] * off];
+      // glyph y (down) maps onto the path's right-hand normal in screen space (-dy, dx)
+      return [f[0] - f[3] * off, f[1] + f[2] * off];
     },
     { rgb: o.rgb || TYPE.rgb, a: o.a ?? 1, glow: o.glow ?? 0.25, alphaFn: o.per ? (gi, g) => o.per(gi, g)?.a ?? 1 : null }
   );
   return { w: S.width * size, L };
+}
+
+// ---- scrim: a feathered dark field behind type (dims the vector and glow layers beneath it) ------
+const SCRIMS = new Map();
+function scrimSprite(w, h, f) {
+  const key = `${Math.round(w)}|${Math.round(h)}|${Math.round(f)}`;
+  let c = SCRIMS.get(key);
+  if (c) return c;
+  c = document.createElement('canvas');
+  c.width = Math.ceil(w + f * 4);
+  c.height = Math.ceil(h + f * 4);
+  const g = c.getContext('2d');
+  // draw the rect far off-canvas and keep only its blurred shadow
+  g.shadowColor = 'rgba(0,0,0,1)';
+  g.shadowBlur = f;
+  g.shadowOffsetX = 10000;
+  g.fillStyle = '#000';
+  g.fillRect(f * 2 - 10000, f * 2, w, h);
+  SCRIMS.set(key, c);
+  return c;
+}
+export function scrim(F, x, y, w, h, a = 0.55, f = 70) {
+  if (a <= 0.003) return;
+  F.L.flush(); // lines queued so far must sit under the scrim
+  const c = scrimSprite(w, h, f);
+  const ctx = F.ctx;
+  ctx.save();
+  ctx.globalAlpha = a;
+  ctx.drawImage(c, x - f * 2, y - f * 2);
+  ctx.restore();
+  const g = F.g;
+  g.save();
+  g.globalAlpha = Math.min(1, a * 1.2);
+  g.globalCompositeOperation = 'destination-out';
+  g.drawImage(c, x - f * 2, y - f * 2);
+  g.restore();
 }
 
 // ---- atmosphere -----------------------------------------------------------------------------------
