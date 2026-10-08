@@ -269,7 +269,7 @@ export function draw(F, lt, t) {
   if (kv > 0) {
     const k = W.kneeR;
     const r = mulberry32(77);
-    const n = 3500;
+    const n = 7000;
     const P = new Float32Array(n * 3), En = new Float32Array(n);
     for (let i = 0; i < n; i++) {
       const a = r() * 6.283, b = Math.acos(2 * r() - 1), rr = 0.07 * Math.cbrt(r());
@@ -279,7 +279,7 @@ export function draw(F, lt, t) {
       P[i * 3 + 2] = k[2] + Math.sin(a + sw) * Math.sin(b) * rr;
       En[i] = 0.3 + r() * 0.7;
     }
-    cloud(F, P, n, { rgb: PF.GREEN, E: En, e: 0.5 * kv * out, near: [0.005, 0.05], dof: { focus: 0.15, range: 0.2, max: 6, gain: 0.3 } });
+    cloud(F, P, n, { rgb: PF.GREEN, E: En, e: 1.2 * kv * out, near: [0.005, 0.03], dof: { focus: 0.15, range: 0.2, max: 8, gain: 0.45 } });
   }
   // the dive: rushing into the knee
   if (t > EV.kneeDive[0]) {

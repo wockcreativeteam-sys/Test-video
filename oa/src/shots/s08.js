@@ -171,7 +171,7 @@ export function draw(F, lt, t) {
   // the burst is hot (green-white, from inside her knee) and cools into the violet room
   const cool = E.inOutSine(u01(t, 29.3, 30.4));
   const rgb = [lerp(0.7, PF.VIOLET_HI[0], cool), lerp(1.0, PF.VIOLET_HI[1], cool), lerp(0.8, PF.VIOLET_HI[2], cool)];
-  cloud(F, room.P, room.n, { rgb, E: room.e, e: lerp(4.5, 1.05, cool) * ra, near: [0.02, 0.12], dof: { focus: cf.focus, range: 3.5, max: lerp(0.6, 3, cool), gain: 0.2 } });
+  cloud(F, room.P, room.n, { rgb, E: room.e, e: lerp(4.5, 1.05, cool * cool) * ra, near: [0.02, 0.12], dof: { focus: cf.focus, range: 3.5, max: lerp(0.6, 3, cool), gain: 0.2 } });
   if (burst > -0.02 && burst < 0.5) {
     F.fx.exposure = 1 + 0.5 * Math.exp(-Math.max(0, burst) * 8);
     F.fx.zoom = 0.18 * Math.exp(-Math.max(0, burst) * 5);

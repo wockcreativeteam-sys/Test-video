@@ -103,3 +103,42 @@ palette and Healwave (`film/kv/kv.js`): **A** night line-up — *ALL OF THIS, FO
 **B** day blueprint — *THE HOSPITAL, RE-ENGINEERED.*; **C** life at the centre — *TECHNOLOGY FIRST.
 LIFE ALWAYS.* Render with `node tools/render_kv.mjs` → `out/kv/` (PNG masters + JPEGs). The
 wordmark is a stand-in; drop in the registered logo before print.
+
+---
+
+# Wockhardt — *Every Step* (World OA Day, 60 s)
+
+A second film in this repository, in `oa/`: a 60-second experimental motion-design film for World
+Osteoarthritis Day. One continuous move — HAND → STEP → BODY → JOINT → TIME → MEMORY → HAND — carried by a
+single green line, her life in motion. Purple is the world and memory, green is life and movement, red
+is pain: it arrives almost invisibly, grows, and goes out.
+
+**Film:** `out/oa/wockhardt_world_oa_day_every_step_1080p.mp4` (1920×1080, 30 fps, 60 s, scratch VO mix) ·
+`…_music-and-effects.mp4` (same picture, no VO, for recording the voice-over to picture).
+**Treatment, shot list, VO timings:** [`docs/OA_TREATMENT.md`](docs/OA_TREATMENT.md)
+
+```
+oa/
+  index.html                 player (scrub/play with the mix) + offline render hooks
+  src/timeline.js            master clock: shot windows, VO placement, every event (single source of truth)
+  src/look.js  palette.js    the grade over time; the three-colour system
+  src/engine/                camera, line batcher, HDR particle film (splat.js), luminous line (green.js),
+                             glyph outlines → 3D / path / particle type (glyphs.js, opentype.js),
+                             WebGL2 post (shock ring, flow warp, zoom blur, bloom, grain)
+  src/lib/                   hands (SDF contours), IK walking body made of particles (figure.js),
+                             the life walk (walker.js), worlds that grow out of footprints (worlds.js, growth.js)
+  src/shots/s01 … s14        one module per shot; neighbours overlap and hand elements to each other
+  audio/sound.py             synthesised sound design + VO placement → mix / M&E / VO stem (−16 LUFS)
+  audio/vo/                  scratch VO lines (local Kokoro TTS; regenerate with tools/oa/vo.py)
+tools/oa/
+  render.mjs  render_all.sh  headless Chromium → ffmpeg, 8 chunks on 4 workers → master, web, M&E
+  export_cues.mjs            timeline → oa/audio/cues.json
+```
+
+```bash
+tools/oa/render_all.sh                                   # audio + 1800 frames + mux (≈15 min on 4 cores)
+node tools/oa/render.mjs stills --times 2.3,28.8,57.5 --out out/oa/stills
+python3 -I oa/audio/sound.py oa/audio/cues.json oa/audio/   # the soundtrack only
+```
+
+The end card's WOCKHARDT is a typographic stand-in for the registered brand mark.

@@ -9,7 +9,7 @@ import { cloud } from '../engine/cloud.js';
 import { glowLine } from '../engine/green.js';
 import { walkerJoints, walkerCam, walkerParticles, walkerEnergy, lifeGait } from '../lib/walker.js';
 import { drawFootprints, drawWorlds, footAt } from './s03.js';
-import { glow3, textFlat, u01, dust, stepTime } from './common.js';
+import { glow3, textFlat, u01, dust, stepTime, scrim } from './common.js';
 import { C, F as PF } from '../palette.js';
 import { EV } from '../timeline.js';
 
@@ -34,7 +34,7 @@ function paceX(t, gp) {
 let knee = null;
 export function init() {
   const r = mulberry32(606);
-  const n = 3000;
+  const n = 9000;
   knee = { n, o: new Float32Array(n * 3), e: new Float32Array(n), w: new Float32Array(n) };
   for (let i = 0; i < n; i++) {
     const a = r() * 6.283, b = Math.acos(2 * r() - 1), rr = 0.07 * Math.cbrt(r());
@@ -71,7 +71,7 @@ export function draw(F, lt, t) {
       P[i * 3 + 1] = k[1] + knee.o[i * 3 + 1];
       P[i * 3 + 2] = k[2] + ox * Math.sin(sw) + oz * Math.cos(sw);
     }
-    cloud(F, P, knee.n, { rgb: PF.GREEN, E: knee.e, e: 0.5 * kv, near: [0.005, 0.05], dof: { focus: 0.3, range: 0.25, max: 8, gain: 0.3 } });
+    cloud(F, P, knee.n, { rgb: PF.GREEN, E: knee.e, e: 1.3 * kv, near: [0.005, 0.03], dof: { focus: 0.25, range: 0.2, max: 9, gain: 0.45 } });
   }
   dust(F, t, { n: 800, e: 0.07, box: 16 });
   // ---- the world at full pace --------------------------------------------------------------------
@@ -145,6 +145,7 @@ function drawElastic(F, t, J, gp, a0) {
 
 function drawType(F, t, a0) {
   const x = 150, y1 = 236, y2 = 236 + 96;
+  if (t > 20.85 && t < 24.6) scrim(F, 90, 150, 1100, 230, 0.55 * a0 * E.outCubic(u01(t, 20.85, 21.2)) * (1 - E.inQuad(u01(t, 24.25, 24.6))));
   // SHE STARTED WALKING — appears at 24, then 12 fps
   if (t > 20.85 && t < 24.6) {
     const ts = stepTime(t, t < 21.6 ? 24 : 12);
