@@ -11,3 +11,7 @@ out/wockhardt_reengineered_1080p.mp4
 out/*_preview.mp4
 # two-pass encoder logs (transient)
 ffmpeg2pass-*
+oa/audio/mix.wav
+oa/audio/me.wav
+oa/audio/vo_stem.wav
+out/oa/
