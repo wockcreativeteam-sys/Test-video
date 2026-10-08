@@ -1,0 +1,24 @@
+<!doctype html><html><body style="margin:0;background:#120720"><canvas id="c" width="1920" height="1080"></canvas>
+<script type="module">
+import { handShape, placeHand, placePoint, handRig, POSES } from '../src/lib/hand.js';
+const q = new URLSearchParams(location.search);
+const c = document.getElementById('c').getContext('2d');
+c.fillStyle = '#120720'; c.fillRect(0, 0, 1920, 1080);
+const list = [['mother', q.get('p1') || 'reach', 520, 1060, 48], ['child', q.get('p2') || 'reach', 1400, 1060, 62]];
+for (const [k, p, x, y, sc] of list) {
+  const T = handShape(k, p);
+  const P = placeHand(T, x, y, sc, 0);
+  // prims
+  const rig = handRig(k, POSES[p]);
+  c.strokeStyle = 'rgba(150,112,236,0.35)'; c.lineWidth = 1;
+  for (const pr of rig.prims) {
+    const a = placePoint(pr[0], pr[1], x, y, sc, 0), b = placePoint(pr[2], pr[3], x, y, sc, 0);
+    c.beginPath(); c.moveTo(a[0], a[1]); c.lineTo(b[0], b[1]); c.stroke();
+    c.beginPath(); c.arc(a[0], a[1], pr[4] * sc, 0, 7); c.stroke();
+  }
+  c.strokeStyle = 'rgb(64,255,138)'; c.lineWidth = 2.5; c.beginPath();
+  for (let j = 0; j < T.n; j++) j ? c.lineTo(P[j*2], P[j*2+1]) : c.moveTo(P[0], P[1]);
+  c.stroke();
+}
+window.__done = true;
+</script></body></html>

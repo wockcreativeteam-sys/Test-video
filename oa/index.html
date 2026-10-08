@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Every Step — World OA Day</title>
+<style>
+  @font-face { font-family: "Inter Display"; font-weight: 200; src: url(assets/fonts/InterDisplay-ExtraLight.otf); }
+  @font-face { font-family: "Inter Display"; font-weight: 300; src: url(assets/fonts/InterDisplay-Light.otf); }
+  @font-face { font-family: "Inter Display"; font-weight: 400; src: url(assets/fonts/InterDisplay-Regular.otf); }
+  @font-face { font-family: "Inter Display"; font-weight: 500; src: url(assets/fonts/InterDisplay-Medium.otf); }
+  @font-face { font-family: "Inter Display"; font-weight: 600; src: url(assets/fonts/InterDisplay-SemiBold.otf); }
+  @font-face { font-family: "Inter Display"; font-weight: 700; src: url(assets/fonts/InterDisplay-Bold.otf); }
+  @font-face { font-family: "Geist Mono"; font-weight: 300; src: url(assets/fonts/GeistMono-Light.woff2); }
+  @font-face { font-family: "Geist Mono"; font-weight: 400; src: url(assets/fonts/GeistMono-Regular.woff2); }
+  @font-face { font-family: "Geist Mono"; font-weight: 500; src: url(assets/fonts/GeistMono-Medium.woff2); }
+  html, body { margin: 0; background: #000; height: 100%; overflow: hidden; }
+  #out { position: absolute; inset: 0; margin: auto; max-width: 100vw; max-height: 100vh; width: auto; height: auto; aspect-ratio: 16 / 9; display: block; }
+  #ui { display: none; position: fixed; left: 16px; right: 16px; bottom: 12px; gap: 12px; align-items: center;
+        font: 12px "Geist Mono", monospace; color: #c9b8ff; }
+  #ui button { font: inherit; background: #1a0b2e; color: #efe6ff; border: 1px solid #4a2f80; padding: 6px 12px; border-radius: 4px; cursor: pointer; }
+  #ui input { flex: 1; accent-color: #40ff8a; }
+</style>
+</head>
+<body>
+<canvas id="out"></canvas>
+<div id="ui"><button id="play">Play</button><input id="scrub" type="range" min="0" step="0.01" value="0"><span id="tc">0.00s</span></div>
+<audio id="score" src="audio/mix.m4a" preload="auto"></audio>
+<script type="module" src="src/main.js"></script>
+</body>
+</html>

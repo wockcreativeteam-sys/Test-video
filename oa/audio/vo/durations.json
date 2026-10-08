@@ -1,0 +1,38 @@
+{
+ "voice": "af_heart",
+ "speed": 0.92,
+ "durations": {
+  "v01": 1.81,
+  "v02": 1.429,
+  "v03": 3.623,
+  "v04": 1.974,
+  "v05": 1.75,
+  "v06": 1.835,
+  "v07a": 1.665,
+  "v07b": 1.828,
+  "v08": 2.953,
+  "v09": 1.078,
+  "v10": 2.357,
+  "v11": 3.26,
+  "v12": 2.616,
+  "v13a": 2.685,
+  "v13b": 3.574
+ },
+ "lines": {
+  "v01": "The first time she held your hand...",
+  "v02": "she taught you how to walk.",
+  "v03": "She walked us to school. Ran behind us. Ran ahead of us.",
+  "v04": "And somehow, always kept going.",
+  "v05": "Then, somewhere along the way...",
+  "v06": "she started walking a little slower.",
+  "v07a": "Not because she wanted to stop.",
+  "v07b": "Because every step began to hurt.",
+  "v08": "For us, she may be a patient with osteoarthritis.",
+  "v09": "But for someone...",
+  "v10": "she is the woman who never stopped showing up.",
+  "v11": "The first time she held your hand, she taught you how to walk.",
+  "v12": "Maybe now, it's time to notice how she walks.",
+  "v13a": "This World O. A. Day, let's take a pledge.",
+  "v13b": "Notice the signs. Address the pain. Keep life moving."
+ }
+}

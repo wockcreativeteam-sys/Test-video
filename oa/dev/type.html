@@ -1,0 +1,18 @@
+<!doctype html><html><body style="margin:0;background:#120720"><canvas id="c" width="1600" height="900"></canvas>
+<script type="module">
+import { loadGlyphFonts, shape, FONTS } from '../src/engine/glyphs.js';
+await loadGlyphFonts('../assets/fonts/');
+const c = document.getElementById('c').getContext('2d');
+c.fillStyle = '#120720'; c.fillRect(0, 0, 1600, 900);
+let y = 120;
+for (const fam of ['D200','D300','D400','D500','D600','D700']) {
+  const S = shape('HELD SHE WALK OA', fam, { track: 0.1 });
+  c.fillStyle = '#e8deff';
+  c.beginPath();
+  for (const g of S.glyphs) for (const ct of g.contours) { for (let i = 0; i < ct.length; i += 2) { const X = 60 + (g.x + ct[i]) * 90, Y = y + ct[i + 1] * 90; i ? c.lineTo(X, Y) : c.moveTo(X, Y); } c.closePath(); }
+  c.fill('nonzero');
+  c.font = '16px monospace'; c.fillText(fam + ' glyphs=' + S.glyphs.length + ' w=' + S.width.toFixed(2) + ' ' + S.glyphs.map(g => g.contours.length).join(','), 1100, y);
+  y += 130;
+}
+window.__done = true;
+</script></body></html>

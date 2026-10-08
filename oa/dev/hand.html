@@ -1,0 +1,21 @@
+<!doctype html><html><body style="margin:0;background:#120720"><canvas id="c" width="1920" height="1080"></canvas>
+<script type="module">
+import { handShape, placeHand, placePoint } from '../src/lib/hand.js';
+const c = document.getElementById('c').getContext('2d');
+c.fillStyle = '#120720'; c.fillRect(0, 0, 1920, 1080);
+const kinds = [['child','open'],['child','reach'],['child','point'],['mother','open'],['mother','reach'],['older','rest'],['adult','reach'],['adult','hold']];
+let x = 140;
+const t0 = performance.now();
+kinds.forEach(([k, p], i) => {
+  const T = handShape(k, p);
+  const sc = k === 'child' ? 26 : 20;
+  const P = placeHand(T, 130 + i * 235, 860, sc, 0);
+  c.strokeStyle = 'rgb(64,255,138)'; c.lineWidth = 2; c.beginPath();
+  for (let j = 0; j < T.n; j++) j ? c.lineTo(P[j*2], P[j*2+1]) : c.moveTo(P[0], P[1]);
+  c.stroke();
+  T.tipS.forEach((s, ti) => { const tp = placePoint(T.tips[ti][0], T.tips[ti][1], 130 + i * 235, 860, sc, 0); c.fillStyle = '#ff2e4e'; c.beginPath(); c.arc(tp[0], tp[1], 4, 0, 7); c.fill(); });
+  c.fillStyle = '#cbb'; c.font = '16px monospace'; c.fillText(k + ' ' + p + ' n=' + T.n, 60 + i * 235, 1000);
+});
+c.fillStyle = '#fff'; c.fillText('ms ' + (performance.now() - t0).toFixed(0), 20, 30);
+window.__done = true;
+</script></body></html>

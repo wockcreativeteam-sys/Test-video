@@ -1,0 +1,30 @@
+// Render a dev page from oa/dev/ to PNG:  node tools/oa/devshot.mjs hand.html out.png [W H] [query]
+import http from 'node:http';
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+const here = path.dirname(fileURLToPath(import.meta.url));
+const ROOT = path.resolve(here, '..', '..', 'oa');
+const PW = process.env.PLAYWRIGHT_MODULE || '/opt/node22/lib/node_modules/playwright/index.mjs';
+const { chromium } = await import(PW);
+const [page_, out, W = 1920, H = 1080, q = ''] = process.argv.slice(2);
+const MIME = { '.html': 'text/html', '.js': 'text/javascript', '.json': 'application/json', '.png': 'image/png', '.otf': 'font/otf', '.woff2': 'font/woff2' };
+const server = http.createServer((req, res) => {
+  const url = new URL(req.url, 'http://x');
+  const p = path.join(ROOT, decodeURIComponent(url.pathname));
+  if (!p.startsWith(ROOT) || !fs.existsSync(p) || fs.statSync(p).isDirectory()) return res.writeHead(404).end();
+  res.writeHead(200, { 'Content-Type': MIME[path.extname(p)] || 'application/octet-stream' });
+  fs.createReadStream(p).pipe(res);
+});
+await new Promise((r) => server.listen(0, '127.0.0.1', r));
+const browser = await chromium.launch({ args: ['--disable-gpu', '--use-angle=swiftshader', '--enable-unsafe-swiftshader'] });
+const page = await browser.newPage({ viewport: { width: +W, height: +H } });
+page.on('console', (m) => console.log('[page]', m.text()));
+page.on('pageerror', (e) => console.log('[pageerror]', e.message));
+await page.goto(`http://127.0.0.1:${server.address().port}/dev/${page_}${q ? '?' + q : ''}`);
+await page.waitForFunction(() => window.__done, null, { timeout: 120000 });
+const b64 = await page.evaluate(() => document.querySelector('canvas').toDataURL('image/png').split(',')[1]);
+fs.writeFileSync(out, Buffer.from(b64, 'base64'));
+console.log('wrote', out);
+await browser.close();
+server.close();
