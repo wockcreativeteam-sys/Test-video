@@ -14,4 +14,7 @@ ffmpeg2pass-*
 oa/audio/mix.wav
 oa/audio/me.wav
 oa/audio/vo_stem.wav
-out/oa/
+out/oa/chunks/
+out/oa/*_master.mp4
+out/oa/*_preview.mp4
+out/oa/stills/
