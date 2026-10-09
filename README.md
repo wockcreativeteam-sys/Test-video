@@ -142,3 +142,32 @@ python3 -I oa/audio/sound.py oa/audio/cues.json oa/audio/   # the soundtrack onl
 ```
 
 The end card's WOCKHARDT is a typographic stand-in for the registered brand mark.
+
+---
+
+## da Vinci Xi — launch teaser (30 s)
+
+**Watch:** [`out/dv/wockhardt_da_vinci_xi_teaser_1080p.mp4`](out/dv/wockhardt_da_vinci_xi_teaser_1080p.mp4)
+(1920×1080, 30 fps, AAC stereo) · treatment and shot list: [`docs/DV_TEASER.md`](docs/DV_TEASER.md)
+
+A procedural 3D da Vinci Xi (four arms, overhead T-bar boom, drum cap, forked sled — modelled from the
+reference photos) is assembled on a high-tech production line: the light banks strike on the beat,
+graphite robots fasten, weld and scan the base, the column and boom drop in and lock, the four arms
+lock on one per beat, EndoWrist instruments are printed by light in macro, the endoscope and the
+laser targeting are calibrated, and after a blackout the finished cart unfolds its arms in a product
+reveal. 120 BPM synthesised score + mechanical sound design.
+
+```
+dv/
+  index.html               player (scrub + audio)
+  src/engine/r3.js         WebGL2 product renderer: GGX + baked studio cube map, shadow + sky-occlusion
+                           maps, planar floor reflection, MSAA, scan-reveal clip band, hologram, wire, beams
+  src/engine/geo.js        procedural meshes (lathe, loft, sweep with RMF frames, rounded boxes)
+  src/model/davinci.js     the da Vinci Xi (stowed ↔ deployed, setup IK, parallelogram arms, instruments, wrist)
+  src/model/robot6.js      graphite 6-axis assembly robots with analytic IK
+  src/model/sets.js        the hall (light banks, gantry, pallet, pads) and the studio rig
+  src/shots/s01–s08.js     the eight shots; hud.js (callouts, headers, type that assembles), world.js
+  audio/sound.py           the score and sound design (→ dv/audio/mix.m4a)
+tools/dv/render.mjs        headless Chromium (GL=llvm: Xvfb + Mesa llvmpipe) → ffmpeg
+tools/dv/render_all.sh     6 chunks on 3 workers → master + web
+```
