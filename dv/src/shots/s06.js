@@ -53,8 +53,8 @@ function scope(F, t) {
     mono(F, 'L', cx - w / 2 - off + 12, cy - h / 2 + 26, { size: 14, a: 0.8 * (1 - k), rgb: C.CYAN });
     mono(F, 'R', cx + w / 2 + off - 24, cy - h / 2 + 26, { size: 14, a: 0.8 * (1 - k), rgb: C.ICE });
   }
-  if (t > 20.35) assemble(F, '3D HD', cx, cy + 34, 120, t, 20.38, { align: 'c', fam: 'D200', track: 0.04, spread: 120 });
-  if (t > 20.55) mono(F, 'VISION', cx, cy + 92, { size: 22, a: u01(t, 20.55, 20.75), align: 'center', rgb: C.CYAN, track: 12 });
+  if (t > 20.1) assemble(F, '3D HD', cx, cy + 34, 120, t, 20.12, { align: 'c', fam: 'D200', track: 0.04, spread: 120, stagger: 0.025, dur: 0.3 });
+  if (t > 20.3) mono(F, 'VISION', cx, cy + 92, { size: 24, a: u01(t, 20.3, 20.5), align: 'center', rgb: C.CYAN, track: 12 });
   header(F, '05', 'VISION', t, 20.05, 20.97);
   frameHUD(F, t, { status: 'STATION 05 · OPTICS', rec: true });
 }

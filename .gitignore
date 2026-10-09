@@ -22,5 +22,6 @@ out/oa/stills/
 # da Vinci teaser: render scratch (chunks, browser temp dirs), master
 out/dv/chunks/
 out/dv/*_master.mp4
+out/dv/*_preview.mp4
 out/dv/stills/
 dv/audio/mix.wav
