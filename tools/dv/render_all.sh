@@ -6,7 +6,7 @@
 #   SKIP_AUDIO=1 ...                      # keep dv/audio/mix.wav
 set -euo pipefail
 cd "$(dirname "$0")/../.."
-OUT="${OUT:-out/dv/wockhardt_da_vinci_xi_teaser_1080p_master.mp4}"
+OUT="${OUT:-out/dv/wockhardt_da_vinci_x_teaser_1080p_master.mp4}"
 WORKERS="${WORKERS:-3}"
 TMP="${CHUNK_DIR:-out/dv/chunks}"
 export TMP

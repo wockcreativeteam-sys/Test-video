@@ -1,6 +1,6 @@
 // SHOT 07 — HERO (23.0 – 30.0 s; the end card plays over its last seconds)
 // Blackout on the downbeat — only the light rings glow. A blade of light sweeps across the shells;
-// then the cart is lit like a product and unfolds its four arms in one movement. da Vinci Xi.
+// then the cart is lit like a product and unfolds its four arms in one movement. da Vinci X.
 import { m4 } from '../engine/m4.js';
 import { clamp, lerp, E } from '../engine/util.js';
 import { hallScene, drawHall } from '../model/sets.js';
@@ -54,7 +54,7 @@ export function draw(F, lt, t) {
   if (t > EV.title && t < 27.6) {
     const out = u01(t, 27.3, 27.55);
     scrim(F, 80, 400, 700, 260, 0.45 * (1 - out));
-    const r1 = assemble(F, 'da Vinci Xi', 140, 560, 124, t, EV.title, { fam: 'D300', track: 0.0, spread: 150, a: 1 - out });
+    const r1 = assemble(F, 'da Vinci X', 140, 560, 124, t, EV.title, { fam: 'D300', track: 0.0, spread: 150, a: 1 - out });
     if (r1) mono(F, '®', 140 + r1.w + 8, 482, { size: 26, a: u01(t, EV.title + 0.4, EV.title + 0.6) * (1 - out), rgb: C.WHITE, wt: 400 });
     if (t > EV.sub) {
       mono(F, 'ROBOTIC SURGICAL SYSTEM', 146, 622, { size: 20, a: u01(t, EV.sub, EV.sub + 0.25) * (1 - out), rgb: C.CYAN, track: 7 });

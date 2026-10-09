@@ -165,7 +165,7 @@ export class DaVinci {
     };
     this.wrist = buildWrist(R);
     this.cable = M(sweep(bezier([0, 0, 0], [0, 0.2, 0.0], [-0.06, 0.32, -0.12], [-0.1, 0.12, -0.3], 30), circleOutline(0.0065, 12), { wireEvery: 6 }));
-    this.topLabel = R.decal(labelCanvas('da Vinci Xi', { w: 1024, h: 160, font: '400 90px "Inter Display"', color: '#ffffff', track: 2 }), 0.17, 0.0266);
+    this.topLabel = R.decal(labelCanvas('da Vinci X', { w: 1024, h: 160, font: '400 90px "Inter Display"', color: '#ffffff', track: 2 }), 0.17, 0.0266);
     this.state = defaultState();
     GEO.q = q0;
   }

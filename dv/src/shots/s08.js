@@ -48,7 +48,7 @@ export function draw(F, lt, t) {
     }
   }
   if (t > 28.6) {
-    mono(F, 'da Vinci, da Vinci Xi and EndoWrist are trademarks of Intuitive Surgical, Inc.  ·  Computer-generated imagery.', cx, 1030, { size: 12, a: 0.7 * u01(t, 28.6, 28.9), align: 'center', rgb: '90,96,108', track: 1, wt: 400 });
+    mono(F, 'da Vinci, da Vinci X and EndoWrist are trademarks of Intuitive Surgical, Inc.  ·  Computer-generated imagery.', cx, 1030, { size: 12, a: 0.7 * u01(t, 28.6, 28.9), align: 'center', rgb: '90,96,108', track: 1, wt: 400 });
   }
   void clamp;
   void lerp;
