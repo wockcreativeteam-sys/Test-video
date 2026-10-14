@@ -109,6 +109,12 @@
       "skillPath": "skills/product-launch-video/SKILL.md",
       "computedHash": "9df1efcda7a3e02b0e372a77262bc30333b61686a48bd553efe97c4737e1f5d6"
     },
+    "reel-editor": {
+      "source": "nicolapocock/claude-reel-editor",
+      "sourceType": "github",
+      "skillPath": "skills/reel-editor/SKILL.md",
+      "computedHash": "bd2d512a92560140d4e64bcd45e7b40b60b1968d60e5ad29e4b95815d91f3f52"
+    },
     "remotion-to-hyperframes": {
       "source": "heygen-com/hyperframes",
       "sourceType": "github",
