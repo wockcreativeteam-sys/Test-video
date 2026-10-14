@@ -3,44 +3,35 @@
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=1920, height=1080">
-    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <title>Wockhardt Antibiotic Academy</title>
+    <script src="assets/gsap.min.js"></script>
     <style>
-      * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-      }
-      html,
-      body {
-        margin: 0;
-        width: 1920px;
-        height: 1080px;
-        overflow: hidden;
-        background: #0a0a0a;
-      }
-      #root {
-        width: 100%;
-        height: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-family: Inter, ui-sans-serif, system-ui, sans-serif;
-      }
-      #title {
-        color: #f4f4f5;
-        font-size: 72px;
-        font-weight: 600;
-        letter-spacing: -0.03em;
-      }
+      *{margin:0;padding:0;box-sizing:border-box}
+      html,body{margin:0;width:1920px;height:1080px;overflow:hidden;background:#0a1240}
+      #root{position:relative;width:100%;height:100%;overflow:hidden}
     </style>
   </head>
   <body>
-    <div data-hf-id="hf-199x" id="root" data-composition-id="main" data-start="0" data-duration="10" data-width="1920" data-height="1080">
-      <h1 data-hf-id="hf-v7pl" id="title" class="clip" data-start="0" data-duration="10" data-track-index="0">Title</h1>
+    <div id="root" data-composition-id="main" data-start="0" data-duration="38" data-width="1920" data-height="1080">
+    <div id="host-01" data-composition-id="frame-01" data-composition-src="compositions/frames/01-decision.html" data-start="0" data-duration="3" data-track-index="0" data-width="1920" data-height="1080"></div>
+    <div id="host-02" data-composition-id="frame-02" data-composition-src="compositions/frames/02-ward.html" data-start="2.65" data-duration="2.35" data-track-index="1" data-width="1920" data-height="1080"></div>
+    <div id="host-03" data-composition-id="frame-03" data-composition-src="compositions/frames/03-clinic.html" data-start="4.65" data-duration="1.85" data-track-index="0" data-width="1920" data-height="1080"></div>
+    <div id="host-04" data-composition-id="frame-04" data-composition-src="compositions/frames/04-labreport.html" data-start="6.15" data-duration="1.85" data-track-index="1" data-width="1920" data-height="1080"></div>
+    <div id="host-05" data-composition-id="frame-05" data-composition-src="compositions/frames/05-map.html" data-start="7.65" data-duration="3.35" data-track-index="0" data-width="1920" data-height="1080"></div>
+    <div id="host-06" data-composition-id="frame-06" data-composition-src="compositions/frames/06-hotspots.html" data-start="10.65" data-duration="3.85" data-track-index="1" data-width="1920" data-height="1080"></div>
+    <div id="host-07" data-composition-id="frame-07" data-composition-src="compositions/frames/07-guideline.html" data-start="14.15" data-duration="3.85" data-track-index="0" data-width="1920" data-height="1080"></div>
+    <div id="host-08" data-composition-id="frame-08" data-composition-src="compositions/frames/08-waa-mark.html" data-start="17.65" data-duration="5.35" data-track-index="1" data-width="1920" data-height="1080"></div>
+    <div id="host-09" data-composition-id="frame-09" data-composition-src="compositions/frames/09-ecosystem.html" data-start="22.65" data-duration="7.35" data-track-index="0" data-width="1920" data-height="1080"></div>
+    <div id="host-10" data-composition-id="frame-10" data-composition-src="compositions/frames/10-intensivist.html" data-start="29.65" data-duration="2.85" data-track-index="1" data-width="1920" data-height="1080"></div>
+    <div id="host-11" data-composition-id="frame-11" data-composition-src="compositions/frames/11-case-lab.html" data-start="32.15" data-duration="3.35" data-track-index="0" data-width="1920" data-height="1080"></div>
+    <div id="host-12" data-composition-id="frame-12" data-composition-src="compositions/frames/12-discussion.html" data-start="35.15" data-duration="2.85" data-track-index="1" data-width="1920" data-height="1080"></div>
+    <audio id="vo1" src="assets/vo1.wav" data-start="0.3" data-duration="6.1" data-track-index="10" data-volume="1"></audio>
+    <audio id="vo2" src="assets/vo2.wav" data-start="8.3" data-duration="7.2" data-track-index="11" data-volume="1"></audio>
+    <audio id="vo3" src="assets/vo3.wav" data-start="18.3" data-duration="10" data-track-index="12" data-volume="1"></audio>
+    <audio id="vo4" src="assets/vo4.wav" data-start="30.3" data-duration="5.95" data-track-index="13" data-volume="1"></audio>
     </div>
     <script>
       const tl = gsap.timeline({ paused: true });
-      // Example: tl.fromTo("#title", { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.6 }, 0);
       window.__timelines["main"] = tl;
       tl.seek(0);
     </script>

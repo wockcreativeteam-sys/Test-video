@@ -1,0 +1,35 @@
+<!doctype html>
+<html><head><meta charset="UTF-8"></head><body>
+<template>
+<style>
+#root{position:absolute;inset:0;overflow:hidden;background:#12206a}
+#root svg{position:absolute;inset:0;width:100%;height:100%;display:block}
+#root text{font-family:Inter,sans-serif}
+</style>
+<div id="root" data-composition-id="frame-08" data-width="1920" data-height="1080">
+<svg viewBox="0 0 160 90" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg"><defs>
+<linearGradient id="gDay-8" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#63b8f7"/><stop offset=".55" stop-color="#2f62c9"/><stop offset="1" stop-color="#27308f"/></linearGradient>
+<linearGradient id="gNight-8" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#1f4aa8"/><stop offset=".6" stop-color="#14267a"/><stop offset="1" stop-color="#0a1240"/></linearGradient>
+<linearGradient id="gLight-8" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#d9e7f8"/></linearGradient>
+<pattern id="pRed-8" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(-35)"><rect width="7" height="7" fill="#f2473a"/><rect width="7" height="2.2" fill="#c4130f" opacity=".85"/></pattern>
+<pattern id="pYel-8" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(25)"><rect width="8" height="8" fill="#f6c53c"/><rect width="8" height="1.8" fill="#e8a317"/></pattern>
+<pattern id="pBl-8" width="5" height="5" patternUnits="userSpaceOnUse" patternTransform="rotate(-30)"><rect width="5" height="5" fill="#fff"/><rect width="5" height="1.4" fill="#b9d3f3"/></pattern>
+<pattern id="pChk-8" width="8" height="8" patternUnits="userSpaceOnUse"><rect width="8" height="8" fill="#e0271b"/><rect width="4" height="4" fill="#c4130f"/><rect x="4" y="4" width="4" height="4" fill="#c4130f"/></pattern>
+</defs><g id="bgwrap"><rect width="160" height="90" fill="url(#gLight-8)" /><g id="cam"><g class="a" id="f8-p0"><path d="M0,0 L30,0 C36,14 18,26 0,30 Z" fill="url(#pRed-8)" /></g><g class="a" id="f8-p1"><circle cx="148" cy="14" r="9" fill="#f6c53c" /></g><g class="a" id="f8-p2"><circle cx="148" cy="80" r="7" fill="#fff" /></g><g class="a" id="f8-p3"><path d="M142,78 q3,-2.5 6,0 t6,0 t5,0 M143,83 q3,-2.5 6,0 t6,0 t4,0" stroke="#b9d3f3" stroke-width="1.1" fill="none" /></g><g class="a" id="f8-p4"><g transform="translate(80,36) scale(1.25)"><rect x="-13" y="-13" width="26" height="26" rx="6" fill="#f6c53c" transform="rotate(45) translate(2.5,2.5)" /><rect x="-13" y="-13" width="26" height="26" rx="6" fill="#2a3a9e" transform="rotate(45)" /><text x="0" y="3.4" font-size="9" font-weight="800" fill="#fff" text-anchor="middle" letter-spacing=".6" font-family="Inter,system-ui,sans-serif">WAA</text></g></g><g class="a" id="f8-p5"><line x1="120" y1="12" x2="146" y2="20" stroke="#2a3a9e" stroke-width=".7" /></g><g class="a" id="f8-p6"><circle cx="146" cy="20" r="1.5" fill="#2a3a9e" /></g><g class="a" id="f8-p7"><text x="80" y="74" font-size="5.6" font-weight="800" fill="#12206a" text-anchor="middle" letter-spacing="1.3" font-family="Inter,system-ui,sans-serif">WOCKHARDT ANTIBIOTIC ACADEMY</text></g></g></g></svg>
+</div>
+<script>
+const tl=gsap.timeline({paused:true});
+tl.from("#f8-p0",{opacity:0,scale:.9,duration:.6,ease:"power2.out",svgOrigin:"80 45"},0.12);
+tl.from("#f8-p1",{opacity:0,scale:.9,duration:.6,ease:"power2.out",svgOrigin:"80 45"},0.34);
+tl.from("#f8-p2",{opacity:0,scale:.9,duration:.6,ease:"power2.out",svgOrigin:"80 45"},0.56);
+tl.from("#f8-p3",{opacity:0,scale:.9,duration:.6,ease:"power2.out",svgOrigin:"80 45"},0.78);
+tl.from("#f8-p4",{opacity:0,scale:.9,duration:.6,ease:"power2.out",svgOrigin:"80 45"},1.0);
+tl.from("#f8-p5",{opacity:0,duration:.6,ease:"none"},1.22);
+tl.from("#f8-p6",{opacity:0,scale:.9,duration:.6,ease:"power2.out",svgOrigin:"80 45"},1.44);
+tl.from("#f8-p7",{x:-8,opacity:0,duration:.55,ease:"power3.out"},1.66);
+tl.to("#f8-p7",{opacity:0,duration:0.35,ease:"none"},5);
+tl.fromTo("#cam",{scale:1},{scale:1.07,duration:5.35,ease:"none",svgOrigin:"80 45"},0);
+tl.fromTo("#bgwrap",{opacity:0},{opacity:1,duration:0.35,ease:"none"},0);
+window.__timelines["frame-08"]=tl;
+</script>
+</template></body></html>

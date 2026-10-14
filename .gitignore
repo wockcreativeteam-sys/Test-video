@@ -25,3 +25,4 @@ out/dv/*_master.mp4
 out/dv/*_preview.mp4
 out/dv/stills/
 dv/audio/mix.wav
+videos/*/.hyperframes/
