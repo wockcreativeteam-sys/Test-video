@@ -12,7 +12,7 @@ mode: collaborative
 - scene: Night ICU, pen over chart, match cuts to ward, clinic, phone lab report
 - duration: 8s
 - transition_in: cut
-- status: outline
+- status: built
 - voiceover: "Every antibiotic decision is made under pressure. Right patient. Right antibiotic. Right time."
 - src: compositions/frames/01-decision.html
 
@@ -23,7 +23,7 @@ Dark ICU, monitor glow, slow push to chart and pen. Match cuts: ward round, comm
 - scene: Lab report becomes India map, resistance pulses, guideline fades grey
 - duration: 10s
 - transition_in: match-dissolve
-- status: outline
+- status: built
 - voiceover: "But resistance is rising across Indian wards, ICUs and communities, and guidelines don't always keep pace with the..." (cut at pause, missing words NOT invented)
 - src: compositions/frames/02-challenge.html
 
@@ -34,7 +34,7 @@ Animated India map, hotspots pulse across ICUs, wards, clinics. Guideline docume
 - scene: Map dissolves to white, WAA mark resolves, six icons form an ecosystem
 - duration: 12s
 - transition_in: dissolve
-- status: outline
+- status: built
 - voiceover: "This is the Wockhardt Antibiotic Academy. A virtual academy for clinicians, built for one purpose: appropriate antibiotic use, and better outcomes for patients."
 - src: compositions/frames/03-waa.html
 
@@ -45,7 +45,7 @@ Clean white, restrained 3D depth. Text: WOCKHARDT ANTIBIOTIC ACADEMY / A VIRTUAL
 - scene: Four-panel faculty montage with digital interface overlays
 - duration: 8s
 - transition_in: crossfade
-- status: outline
+- status: built
 - voiceover: "Faculty-led. Case-based. Completely non-promotional. No product claims. Just science and dialogue."
 - src: compositions/frames/04-faculty.html
 
