@@ -30,3 +30,4 @@ Opening film for the Wockhardt Antibiotic Academy (WAA). Four scenes: pressure o
 - Voiceover: no approved recording attached. Scratch TTS only for timing, replaced by the approved recording.
 - WAA mark and six icons are placeholders until the real mark and icon set are supplied.
 - Scene timing: 00:00-00:08, 00:08-00:18, 00:18-00:30, 00:30-00:38.
+- Visual style (user reference image): flat vector illustration. Faceless characters with black hair and white hands, bold red / yellow / blue palette, diagonal-striped organic blobs, checker rounded squares, dashed motion paths, node-and-line connectors, paper planes. Applies to the whole film, including the build.
