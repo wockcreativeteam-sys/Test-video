@@ -1,0 +1,1109 @@
+<title>Ball in a Box</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a lab bench. The table (canvas) is the instrument; telemetry reads out under it, controls sit at the right like a control rack. */
+:root {
+  --bg: #e9edf1;
+  --panel: #f8fafb;
+  --field: #fdfefe;
+  --ink: #15212c;
+  --muted: #5d6c7a;
+  --line: #c9d2db;
+  --grid: rgba(21, 33, 44, 0.07);
+  --grid-major: rgba(21, 33, 44, 0.14);
+  --accent: #e0531c;
+  --accent-ink: #ffffff;
+  --cool: #2563c9;
+  --good: #1f8a5b;
+  --warn: #b7791f;
+  --font-display: "Bricolage Grotesque", "Avenir Next", "Segoe UI", system-ui, sans-serif;
+  --font-body: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0b1116; --panel: #121a21; --field: #0e161c; --ink: #e4ebf1; --muted: #8b9aa8;
+    --line: #263340; --grid: rgba(228, 235, 241, 0.05); --grid-major: rgba(228, 235, 241, 0.11);
+    --accent: #ff6a33; --accent-ink: #1a0b03; --cool: #5b9cff; --good: #43c08a; --warn: #e3a64a;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0b1116; --panel: #121a21; --field: #0e161c; --ink: #e4ebf1; --muted: #8b9aa8;
+  --line: #263340; --grid: rgba(228, 235, 241, 0.05); --grid-major: rgba(228, 235, 241, 0.11);
+  --accent: #ff6a33; --accent-ink: #1a0b03; --cool: #5b9cff; --good: #43c08a; --warn: #e3a64a;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 14px;
+  line-height: 1.5;
+}
+.wrap {
+  max-width: 1320px;
+  margin: 0 auto;
+  padding-block: 28px 56px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  display: grid;
+  gap: 22px;
+}
+
+header { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 12px 24px; }
+h1 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(30px, 4.4vw, 46px);
+  line-height: 1;
+  letter-spacing: -0.02em;
+  margin: 0;
+  text-wrap: balance;
+}
+h1 span { color: var(--accent); }
+.lede { margin: 8px 0 0; color: var(--muted); max-width: 62ch; }
+.spec {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--muted);
+  display: flex; flex-wrap: wrap; gap: 6px 16px;
+}
+.spec b { color: var(--ink); font-weight: 500; }
+
+.main { display: grid; grid-template-columns: minmax(0, 1fr) 330px; gap: 20px; align-items: start; }
+@media (max-width: 960px) { .main { grid-template-columns: minmax(0, 1fr); } }
+
+.stage { display: grid; gap: 14px; min-width: 0; }
+.table-wrap {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 10px;
+  position: relative;
+}
+#table { display: block; width: 100%; touch-action: none; cursor: crosshair; border-radius: 4px; }
+#table:focus-visible { outline: 2px solid var(--cool); outline-offset: 3px; }
+#table.grab { cursor: grab; }
+#table.grabbing { cursor: grabbing; }
+.hint {
+  display: flex; flex-wrap: wrap; gap: 4px 16px;
+  font-size: 12px; color: var(--muted); padding: 8px 4px 0;
+}
+.hint kbd {
+  font-family: var(--font-mono); font-size: 11px;
+  border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 4px;
+  padding: 0 5px; color: var(--ink); background: var(--field);
+}
+
+.readout {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(128px, 1fr));
+  gap: 1px;
+  background: var(--line);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  overflow: hidden;
+}
+.cell { background: var(--panel); padding: 10px 12px; min-width: 0; }
+.cell .k {
+  font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted);
+  display: flex; justify-content: space-between; gap: 6px;
+}
+.cell .v {
+  font-family: var(--font-mono); font-size: 20px; font-weight: 500;
+  font-variant-numeric: tabular-nums; margin-top: 2px; white-space: nowrap;
+}
+.cell .v small { font-size: 12px; color: var(--muted); font-weight: 400; margin-left: 3px; }
+.cell .sub { font-family: var(--font-mono); font-size: 11px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.pill {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-family: var(--font-mono); font-size: 13px; font-weight: 500;
+  padding: 3px 10px; border-radius: 999px; margin-top: 4px;
+  border: 1px solid currentColor;
+}
+.pill::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+.pill[data-mode="slide"] { color: var(--accent); }
+.pill[data-mode="roll"] { color: var(--cool); }
+.pill[data-mode="rest"] { color: var(--good); }
+.pill[data-mode="ready"] { color: var(--muted); }
+.ebar { height: 5px; border-radius: 3px; background: var(--line); margin-top: 6px; overflow: hidden; display: flex; }
+.ebar i { display: block; height: 100%; }
+.ebar .t { background: var(--accent); }
+.ebar .r { background: var(--cool); }
+
+.chart-card {
+  background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px 10px;
+}
+.chart-head { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 6px 16px; align-items: baseline; }
+.chart-head h2 { font-family: var(--font-display); font-size: 17px; font-weight: 500; margin: 0; }
+.legend { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 12px; color: var(--muted); }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.legend i { width: 14px; height: 0; border-top: 2px solid; display: inline-block; }
+#chart { display: block; width: 100%; height: 150px; margin-top: 6px; }
+.verdict { margin: 4px 0 0; font-size: 13px; color: var(--muted); min-height: 1.5em; }
+.verdict b { color: var(--ink); font-weight: 600; }
+
+aside.controls {
+  background: var(--panel); border: 1px solid var(--line); border-radius: 10px;
+  display: grid; gap: 0;
+}
+fieldset { border: 0; margin: 0; padding: 14px 16px 16px; display: grid; gap: 12px; border-top: 1px solid var(--line); min-width: 0; }
+fieldset:first-child { border-top: 0; }
+legend {
+  font-family: var(--font-display); font-size: 16px; font-weight: 500; padding: 0; float: left; width: 100%;
+  display: flex; justify-content: space-between; align-items: baseline;
+}
+legend small { font-family: var(--font-body); font-size: 11px; color: var(--muted); font-weight: 400; letter-spacing: 0.06em; text-transform: uppercase; }
+.ctl { display: grid; gap: 4px; clear: both; }
+.ctl label { display: flex; justify-content: space-between; gap: 8px; font-size: 13px; }
+.ctl output { font-family: var(--font-mono); font-size: 12px; font-variant-numeric: tabular-nums; color: var(--ink); white-space: nowrap; }
+.ctl .scale { display: flex; justify-content: space-between; font-size: 11px; color: var(--muted); }
+input[type="range"] { width: 100%; accent-color: var(--accent); margin: 0; height: 22px; }
+input[type="range"]:focus-visible { outline: 2px solid var(--cool); outline-offset: 2px; border-radius: 4px; }
+
+.seg { display: flex; flex-wrap: wrap; gap: 6px; clear: both; }
+.seg button {
+  font: inherit; font-size: 12px; padding: 5px 10px; border-radius: 6px;
+  border: 1px solid var(--line); background: var(--field); color: var(--ink); cursor: pointer;
+}
+.seg button[aria-pressed="true"] { border-color: var(--ink); background: var(--ink); color: var(--panel); }
+.seg button:focus-visible, .btn:focus-visible { outline: 2px solid var(--cool); outline-offset: 2px; }
+.row { display: flex; gap: 8px; clear: both; }
+.btn {
+  font: inherit; font-weight: 600; font-size: 14px; padding: 10px 14px; border-radius: 8px;
+  border: 1px solid var(--line); background: var(--field); color: var(--ink); cursor: pointer; flex: 1;
+}
+.btn.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); flex: 2; }
+.btn:hover { filter: brightness(1.05); }
+.btn:active { transform: translateY(1px); }
+.checks { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 13px; clear: both; }
+.checks label { display: inline-flex; gap: 6px; align-items: center; cursor: pointer; }
+.checks input { accent-color: var(--accent); }
+
+.model { display: grid; gap: 12px; }
+.model h2 { font-family: var(--font-display); font-size: 22px; font-weight: 500; margin: 0; }
+.eqs { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+@media (max-width: 1100px) { .eqs { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 560px) { .eqs { grid-template-columns: minmax(0, 1fr); } }
+.eq { border-top: 2px solid var(--ink); padding-top: 10px; min-width: 0; }
+.eq h3 { margin: 0 0 4px; font-size: 14px; font-weight: 600; }
+.eq p { margin: 0 0 8px; color: var(--muted); font-size: 13px; }
+.eq code {
+  display: block; font-family: var(--font-mono); font-size: 12px; line-height: 1.7;
+  color: var(--ink); white-space: pre-wrap; overflow-wrap: anywhere;
+}
+.try { margin: 4px 0 0; padding: 0; list-style: none; display: grid; gap: 6px; color: var(--muted); font-size: 13px; }
+.try b { color: var(--ink); font-weight: 600; }
+</style>
+
+<div class="wrap">
+  <header>
+    <div>
+      <h1>Ball in a <span>Box</span></h1>
+      <p class="lede">Strike the ball and watch it slide, start rolling, bounce off the walls and come to rest. The dashed line is where the model says it will stop, worked out before the ball moves.</p>
+    </div>
+    <div class="spec" aria-label="Table specification">
+      <span>Box <b>2.00 × 1.00 m</b></span>
+      <span>g <b>9.81 m/s²</b></span>
+      <span>Step <b>1 ms</b></span>
+    </div>
+  </header>
+
+  <div class="main">
+    <section class="stage" aria-label="Simulation">
+      <div class="table-wrap">
+        <canvas id="table" tabindex="0" aria-label="Table seen from above. Drag away from the ball to aim, release to strike."></canvas>
+        <div class="hint">
+          <span>Drag anywhere and release to strike (pull back like a cue)</span>
+          <span>Drag the ball to move it</span>
+          <span><kbd>←</kbd><kbd>→</kbd> aim · <kbd>↑</kbd><kbd>↓</kbd> force · <kbd>Space</kbd> strike · <kbd>R</kbd> reset</span>
+        </div>
+      </div>
+
+      <div class="readout" aria-live="off">
+        <div class="cell"><div class="k">State</div><div><span class="pill" id="o-state" data-mode="ready">Ready</span></div></div>
+        <div class="cell"><div class="k">Speed</div><div class="v" id="o-speed">0.00<small>m/s</small></div><div class="sub" id="o-vel">vx 0.00 · vy 0.00</div></div>
+        <div class="cell"><div class="k">Spin</div><div class="v" id="o-spin">0.0<small>rad/s</small></div><div class="sub" id="o-slip">slip 0.00 m/s</div></div>
+        <div class="cell"><div class="k">Kinetic energy</div><div class="v" id="o-ke">0.000<small>J</small></div><div class="ebar" title="Translation (orange) and rotation (blue)"><i class="t" id="o-ket"></i><i class="r" id="o-ker"></i></div></div>
+        <div class="cell"><div class="k">Distance</div><div class="v" id="o-dist">0.00<small>m</small></div><div class="sub" id="o-time">t 0.00 s</div></div>
+        <div class="cell"><div class="k">Wall hits</div><div class="v" id="o-hits">0</div><div class="sub" id="o-last">last impact –</div></div>
+      </div>
+
+      <div class="chart-card">
+        <div class="chart-head">
+          <h2>Speed over time</h2>
+          <div class="legend">
+            <span><i style="border-color: var(--accent)"></i>sliding</span>
+            <span><i style="border-color: var(--cool)"></i>rolling</span>
+            <span><i style="border-color: var(--muted); border-top-style: dashed"></i>predicted</span>
+            <span><i style="border-color: var(--ink); width: 2px; height: 10px; border-top: 0; border-left: 2px solid var(--ink)"></i>wall hit</span>
+          </div>
+        </div>
+        <canvas id="chart" aria-label="Speed versus time chart"></canvas>
+        <p class="verdict" id="verdict">Predicted rest point is marked on the table. Strike to see if the ball agrees.</p>
+      </div>
+    </section>
+
+    <aside class="controls" aria-label="Controls">
+      <fieldset>
+        <legend>Strike <small>external impulse</small></legend>
+        <div class="ctl">
+          <label for="imp">Impulse J <output id="imp-o"></output></label>
+          <input type="range" id="imp" min="0.02" max="1.2" step="0.01" value="0.55">
+        </div>
+        <div class="ctl">
+          <label for="ang">Direction <output id="ang-o"></output></label>
+          <input type="range" id="ang" min="-180" max="180" step="1" value="28">
+        </div>
+        <div class="ctl">
+          <label for="spin">Strike height <output id="spin-o"></output></label>
+          <input type="range" id="spin" min="-1" max="1" step="0.05" value="0">
+          <div class="scale"><span>Low (backspin)</span><span>Centre</span><span>High (topspin)</span></div>
+        </div>
+        <div class="row">
+          <button class="btn primary" id="strike" type="button">Strike</button>
+          <button class="btn" id="reset" type="button">Reset</button>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Ball</legend>
+        <div class="ctl">
+          <label for="mass">Mass <output id="mass-o"></output></label>
+          <input type="range" id="mass" min="0.05" max="1" step="0.01" value="0.17">
+        </div>
+        <div class="ctl">
+          <label for="rad">Radius <output id="rad-o"></output></label>
+          <input type="range" id="rad" min="0.015" max="0.06" step="0.0005" value="0.0285">
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Surface <small>floor of the box</small></legend>
+        <div class="seg" id="surf-seg" role="group" aria-label="Surface preset">
+          <button type="button" data-k="baize" aria-pressed="true">Baize</button>
+          <button type="button" data-k="wood" aria-pressed="false">Wood</button>
+          <button type="button" data-k="ice" aria-pressed="false">Ice</button>
+          <button type="button" data-k="carpet" aria-pressed="false">Carpet</button>
+        </div>
+        <div class="ctl">
+          <label for="muS">Sliding friction μ<sub>s</sub> <output id="muS-o"></output></label>
+          <input type="range" id="muS" min="0" max="0.6" step="0.005" value="0.2">
+        </div>
+        <div class="ctl">
+          <label for="muR">Rolling resistance μ<sub>r</sub> <output id="muR-o"></output></label>
+          <input type="range" id="muR" min="0.001" max="0.1" step="0.001" value="0.01">
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Walls <small>the box edges</small></legend>
+        <div class="seg" id="wall-seg" role="group" aria-label="Wall preset">
+          <button type="button" data-k="rubber" aria-pressed="true">Rubber</button>
+          <button type="button" data-k="steel" aria-pressed="false">Steel</button>
+          <button type="button" data-k="wood" aria-pressed="false">Wood</button>
+          <button type="button" data-k="foam" aria-pressed="false">Foam</button>
+        </div>
+        <div class="ctl">
+          <label for="e">Restitution e <output id="e-o"></output></label>
+          <input type="range" id="e" min="0" max="1" step="0.01" value="0.8">
+        </div>
+        <div class="ctl">
+          <label for="muW">Wall friction μ<sub>w</sub> <output id="muW-o"></output></label>
+          <input type="range" id="muW" min="0" max="0.5" step="0.01" value="0.15">
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>View</legend>
+        <div class="seg" id="speed-seg" role="group" aria-label="Playback speed">
+          <button type="button" data-k="1" aria-pressed="true">1×</button>
+          <button type="button" data-k="0.5" aria-pressed="false">½×</button>
+          <button type="button" data-k="0.25" aria-pressed="false">¼×</button>
+          <button type="button" data-k="0.1" aria-pressed="false">⅒×</button>
+        </div>
+        <div class="checks">
+          <label><input type="checkbox" id="showPred" checked> Prediction</label>
+          <label><input type="checkbox" id="showTrail" checked> Trail</label>
+          <label><input type="checkbox" id="showVec" checked> Velocity arrow</label>
+        </div>
+      </fieldset>
+    </aside>
+  </div>
+
+  <section class="model" aria-label="The physics model">
+    <h2>The model</h2>
+    <div class="eqs">
+      <div class="eq">
+        <h3>1 · The strike</h3>
+        <p>An impulse J gives the ball its launch speed. Hitting above or below centre (height h) also sets it spinning.</p>
+        <code>v₀ = J / m
+ω₀ = 5·J·h / (2·m·R²)
+I  = ⅖·m·R²  (solid sphere)</code>
+      </div>
+      <div class="eq">
+        <h3>2 · Sliding</h3>
+        <p>Right after the strike the ball skids. Kinetic friction slows it and spins it up until the contact point stops slipping.</p>
+        <code>u  = v + ω × r_contact
+a  = −μs·g · û
+du/dt = −(7/2)·μs·g · û</code>
+      </div>
+      <div class="eq">
+        <h3>3 · Rolling</h3>
+        <p>Once u = 0 it rolls without slipping. Only rolling resistance and air drag remain, so it slows gently.</p>
+        <code>v = ω·R
+a = −(μr·g + 5/7·k·v²) · v̂
+k = ½·ρ·Cd·πR² / m</code>
+      </div>
+      <div class="eq">
+        <h3>4 · Wall impact</h3>
+        <p>The normal part of velocity reverses and loses energy. Friction at the wall trims the sideways part, and the wall absorbs some of the spin.</p>
+        <code>vn′ = −e·vn
+Δvt ≤ μw·(1+e)·|vn|, ≤ 2/7·|vt|
+energy lost = ½m·vn²·(1−e²)</code>
+      </div>
+    </div>
+    <ul class="try">
+      <li><b>Natural roll:</b> set strike height to +0.8 (h = 0.4 R). The ball rolls from the first millisecond and never shows the sliding phase.</li>
+      <li><b>Stun and draw:</b> set it to −1 and strike straight at a wall. The ball comes back off the wall faster than a centre hit, because its backspin is already turning it away.</li>
+      <li><b>Ice vs carpet:</b> same strike, different floor. On ice the ball keeps sliding for a long time; on carpet it barely reaches the first wall.</li>
+    </ul>
+  </section>
+</div>
+
+<script>
+(() => {
+  "use strict";
+
+  // ---------- constants ----------
+  const G = 9.81, RHO = 1.2, CD = 0.47, DT = 1 / 1000;
+  const BOX = { W: 2.0, H: 1.0 };
+  const MAX_T = 180;                // prediction horizon, s
+  const SURFACES = {
+    baize:  { muS: 0.20,  muR: 0.010 },
+    wood:   { muS: 0.25,  muR: 0.018 },
+    ice:    { muS: 0.03,  muR: 0.003 },
+    carpet: { muS: 0.45,  muR: 0.065 },
+  };
+  const WALLS = {
+    rubber: { e: 0.80, muW: 0.15, grip: 0.55 },
+    steel:  { e: 0.93, muW: 0.08, grip: 0.25 },
+    wood:   { e: 0.62, muW: 0.25, grip: 0.45 },
+    foam:   { e: 0.35, muW: 0.40, grip: 0.80 },
+  };
+
+  const $ = (s) => document.querySelector(s);
+  const ui = {
+    imp: $("#imp"), ang: $("#ang"), spin: $("#spin"), mass: $("#mass"), rad: $("#rad"),
+    muS: $("#muS"), muR: $("#muR"), e: $("#e"), muW: $("#muW"),
+    showPred: $("#showPred"), showTrail: $("#showTrail"), showVec: $("#showVec"),
+  };
+  let wallGrip = WALLS.rubber.grip;
+  let timeScale = 1;
+
+  function params() {
+    const m = +ui.mass.value, R = +ui.rad.value;
+    return {
+      m, R,
+      muS: +ui.muS.value, muR: +ui.muR.value,
+      e: +ui.e.value, muW: +ui.muW.value, grip: wallGrip,
+      k: 0.5 * RHO * CD * Math.PI * R * R / m,
+    };
+  }
+
+  // ---------- physics ----------
+  // World frame: x right, y up (table plane), z up out of the table. Origin at bottom-left corner.
+  function newBall(x, y) {
+    return { x, y, vx: 0, vy: 0, wx: 0, wy: 0, mode: "rest", t: 0, dist: 0, hits: 0,
+             O: [1, 0, 0, 0, 1, 0, 0, 0, 1] };
+  }
+  function cloneBall(b) { return { ...b, O: b.O.slice() }; }
+
+  function applyStrike(b, J, angDeg, height, P) {
+    const a = angDeg * Math.PI / 180, dx = Math.cos(a), dy = Math.sin(a);
+    const v0 = J / P.m;
+    const h = height * 0.5 * P.R;                     // contact height above centre, |h| <= R/2
+    const w0 = 2.5 * v0 * h / (P.R * P.R);            // 5 J h / (2 m R^2)
+    b.vx += v0 * dx; b.vy += v0 * dy;
+    b.wx += -dy * w0; b.wy += dx * w0;                // axis perpendicular to the shot, in the table plane
+    b.mode = "slide";
+  }
+
+  function wallHit(b, nx, ny, P, ev) {
+    const vn = b.vx * nx + b.vy * ny;                 // n points into the box
+    if (vn >= 0) return;
+    const tx = -ny, ty = nx;
+    const vt = b.vx * tx + b.vy * ty;
+    const vnNew = -P.e * vn;
+    const jn = (1 + P.e) * -vn;                       // normal impulse per unit mass
+    const dvt = Math.min(P.muW * jn, (2 / 7) * Math.abs(vt));
+    const vtNew = vt - Math.sign(vt) * dvt;
+    b.vx = vnNew * nx + vtNew * tx;
+    b.vy = vnNew * ny + vtNew * ty;
+    // The wall grabs part of the spin that was rolling the ball into it.
+    const ws = b.wx * tx + b.wy * ty;
+    const wsNew = ws * (1 - P.grip);
+    b.wx += (wsNew - ws) * tx; b.wy += (wsNew - ws) * ty;
+    b.hits++;
+    b.mode = "slide";
+    if (ev) ev("hit", { x: b.x - nx * P.R, y: b.y - ny * P.R, nx, ny, speed: -vn });
+  }
+
+  function step(b, P, ev, rotate) {
+    if (b.mode === "rest") return;
+    const R = P.R;
+    let sp = Math.hypot(b.vx, b.vy);
+
+    if (b.mode === "slide") {
+      const ux = b.vx - R * b.wy, uy = b.vy + R * b.wx;
+      const us = Math.hypot(ux, uy);
+      const dU = 3.5 * P.muS * G * DT;
+      if (us <= dU) {
+        // friction finishes the job inside this step: snap to pure rolling
+        b.vx -= ux / 3.5; b.vy -= uy / 3.5;
+        b.wx = -b.vy / R; b.wy = b.vx / R;
+        b.mode = "roll";
+        if (ev) ev("roll", null);
+      } else {
+        const ax = -P.muS * G * ux / us, ay = -P.muS * G * uy / us;
+        b.vx += ax * DT; b.vy += ay * DT;
+        b.wx += 2.5 * ay / R * DT; b.wy += -2.5 * ax / R * DT;
+        sp = Math.hypot(b.vx, b.vy);
+        if (sp > 0) {
+          const d = P.k * sp * DT;
+          b.vx -= d * b.vx; b.vy -= d * b.vy;
+        }
+      }
+    } else { // roll
+      const dec = (P.muR * G + (5 / 7) * P.k * sp * sp) * DT;
+      if (dec >= sp) {
+        b.vx = b.vy = b.wx = b.wy = 0;
+        b.mode = "rest";
+        if (ev) ev("rest", null);
+        return;
+      }
+      const f = (sp - dec) / sp;
+      b.vx *= f; b.vy *= f;
+      b.wx = -b.vy / R; b.wy = b.vx / R;
+    }
+
+    sp = Math.hypot(b.vx, b.vy);
+    b.x += b.vx * DT; b.y += b.vy * DT;
+    b.dist += sp * DT;
+    b.t += DT;
+
+    if (b.x < R) { b.x = 2 * R - b.x; wallHit(b, 1, 0, P, ev); }
+    else if (b.x > BOX.W - R) { b.x = 2 * (BOX.W - R) - b.x; wallHit(b, -1, 0, P, ev); }
+    if (b.y < R) { b.y = 2 * R - b.y; wallHit(b, 0, 1, P, ev); }
+    else if (b.y > BOX.H - R) { b.y = 2 * (BOX.H - R) - b.y; wallHit(b, 0, -1, P, ev); }
+
+    if (rotate) rotateOrientation(b, DT);
+  }
+
+  // Rotate the ball's body frame by ω·dt (Rodrigues), so the markings on the ball show rolling vs skidding.
+  function rotateOrientation(b, dt) {
+    const wx = b.wx, wy = b.wy, wm = Math.hypot(wx, wy);
+    if (wm < 1e-9) return;
+    const th = wm * dt, kx = wx / wm, ky = wy / wm;   // kz = 0
+    const c = Math.cos(th), s = Math.sin(th), C = 1 - c;
+    const r00 = c + kx * kx * C, r01 = kx * ky * C, r02 = ky * s;
+    const r10 = kx * ky * C, r11 = c + ky * ky * C, r12 = -kx * s;
+    const r20 = -ky * s, r21 = kx * s, r22 = c;
+    const O = b.O, n = new Array(9);
+    for (let j = 0; j < 3; j++) {
+      const a0 = O[j], a1 = O[3 + j], a2 = O[6 + j];
+      n[j] = r00 * a0 + r01 * a1 + r02 * a2;
+      n[3 + j] = r10 * a0 + r11 * a1 + r12 * a2;
+      n[6 + j] = r20 * a0 + r21 * a1 + r22 * a2;
+    }
+    b.O = n;
+  }
+  function orthonormalize(O) {
+    // Gram-Schmidt on columns
+    let a = [O[0], O[3], O[6]], c = [O[1], O[4], O[7]];
+    let l = Math.hypot(...a); a = a.map((v) => v / l);
+    const d = a[0] * c[0] + a[1] * c[1] + a[2] * c[2];
+    c = c.map((v, i) => v - d * a[i]); l = Math.hypot(...c); c = c.map((v) => v / l);
+    const z = [a[1] * c[2] - a[2] * c[1], a[2] * c[0] - a[0] * c[2], a[0] * c[1] - a[1] * c[0]];
+    return [a[0], c[0], z[0], a[1], c[1], z[1], a[2], c[2], z[2]];
+  }
+
+  function predict(start, P) {
+    const b = cloneBall(start);
+    const path = [b.x, b.y], curve = [0, Math.hypot(b.vx, b.vy)], hitsT = [];
+    let rollT = null, n = 0;
+    const t0 = b.t;
+    const ev = (type) => {
+      if (type === "hit") { hitsT.push(b.t - t0); path.push(b.x, b.y); }
+      else if (type === "roll" && rollT === null) rollT = b.t - t0;
+    };
+    while (b.mode !== "rest" && b.t - t0 < MAX_T) {
+      step(b, P, ev, false);
+      if (++n % 10 === 0) path.push(b.x, b.y);
+      if (n % 20 === 0) curve.push(b.t - t0, Math.hypot(b.vx, b.vy));
+    }
+    path.push(b.x, b.y);
+    curve.push(b.t - t0, Math.hypot(b.vx, b.vy));
+    return { path, curve, hitsT, rollT, x: b.x, y: b.y, T: b.t - t0, dist: b.dist - start.dist,
+             hits: b.hits - start.hits, moving: b.mode !== "rest" };
+  }
+
+  // ---------- state ----------
+  let ball = newBall(0.42, 0.40);
+  let trail = [];          // [x, y, speed, mode] per frame
+  let live = [];           // [t, v, mode] chart samples since the last strike
+  let liveHits = [];       // chart times of wall hits
+  let flashes = [];        // wall-hit flashes on the table
+  let lastImpact = null;
+  let shot = null;         // { pred, t0, startDist, startHits }
+  let pred = null;         // prediction for the aimed (not yet taken) shot
+  let predDirty = true;
+  let aiming = null;       // { px, py } pointer world pos while dragging to aim
+  let dragBall = null;
+  let restMark = null;
+  let maxSpeedSeen = 1;
+
+  // ---------- UI wiring ----------
+  const fmt = (v, d) => (Math.abs(v) < 0.5 * Math.pow(10, -d) ? 0 : v).toFixed(d);
+  function syncOutputs() {
+    const P = params();
+    const v0 = +ui.imp.value / P.m;
+    $("#imp-o").textContent = `${(+ui.imp.value).toFixed(2)} N·s → ${v0.toFixed(2)} m/s`;
+    $("#ang-o").textContent = `${(+ui.ang.value).toFixed(0)}°`;
+    const s = +ui.spin.value;
+    const tag = s > 0.775 && s < 0.825 ? "natural roll" : s > 0 ? "topspin" : s < 0 ? "backspin" : "centre";
+    $("#spin-o").textContent = `h ${s >= 0 ? "+" : "−"}${Math.abs(s * 0.5).toFixed(2)} R · ${tag}`;
+    $("#mass-o").textContent = `${(P.m * 1000).toFixed(0)} g`;
+    $("#rad-o").textContent = `${(P.R * 1000).toFixed(1)} mm`;
+    $("#muS-o").textContent = P.muS.toFixed(3);
+    $("#muR-o").textContent = P.muR.toFixed(3);
+    $("#e-o").textContent = `${P.e.toFixed(2)} · keeps ${(P.e * P.e * 100).toFixed(0)}% of normal KE`;
+    $("#muW-o").textContent = P.muW.toFixed(2);
+  }
+  function setPressed(seg, key) {
+    seg.querySelectorAll("button").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.k === key)));
+  }
+  const surfSeg = $("#surf-seg"), wallSeg = $("#wall-seg"), speedSeg = $("#speed-seg");
+  surfSeg.addEventListener("click", (e) => {
+    const k = e.target.closest("button")?.dataset.k; if (!k) return;
+    ui.muS.value = SURFACES[k].muS; ui.muR.value = SURFACES[k].muR;
+    setPressed(surfSeg, k); changed();
+  });
+  wallSeg.addEventListener("click", (e) => {
+    const k = e.target.closest("button")?.dataset.k; if (!k) return;
+    ui.e.value = WALLS[k].e; ui.muW.value = WALLS[k].muW; wallGrip = WALLS[k].grip;
+    setPressed(wallSeg, k); changed();
+  });
+  speedSeg.addEventListener("click", (e) => {
+    const k = e.target.closest("button")?.dataset.k; if (!k) return;
+    timeScale = +k; setPressed(speedSeg, k);
+  });
+  [ui.muS, ui.muR].forEach((el) => el.addEventListener("input", () => setPressed(surfSeg, null)));
+  [ui.e, ui.muW].forEach((el) => el.addEventListener("input", () => setPressed(wallSeg, null)));
+  Object.values(ui).forEach((el) => el.addEventListener("input", changed));
+  function changed() {
+    syncOutputs();
+    // Ball size changes: keep it inside the box.
+    const R = +ui.rad.value;
+    ball.x = Math.min(Math.max(ball.x, R), BOX.W - R);
+    ball.y = Math.min(Math.max(ball.y, R), BOX.H - R);
+    predDirty = true;
+  }
+
+  function doStrike() {
+    const P = params();
+    applyStrike(ball, +ui.imp.value, +ui.ang.value, +ui.spin.value, P);
+    shot = { pred: predict(ball, P), t0: ball.t, startDist: ball.dist, startHits: ball.hits };
+    trail = [[ball.x, ball.y, Math.hypot(ball.vx, ball.vy), ball.mode]];
+    live = [[0, Math.hypot(ball.vx, ball.vy), "slide"]];
+    liveHits = []; restMark = null; lastImpact = null;
+    maxSpeedSeen = Math.max(0.5, Math.hypot(ball.vx, ball.vy));
+    pred = null;
+    $("#verdict").textContent = shot.pred.moving
+      ? `Model: still moving after ${MAX_T} s on this surface.`
+      : `Model predicts rest at (${shot.pred.x.toFixed(2)}, ${shot.pred.y.toFixed(2)}) m after ${shot.pred.T.toFixed(2)} s and ${shot.pred.hits} wall hit${shot.pred.hits === 1 ? "" : "s"}.`;
+  }
+  function doReset() {
+    const R = +ui.rad.value;
+    ball = newBall(Math.max(0.42, R), Math.max(0.40, R));
+    trail = []; live = []; liveHits = []; flashes = []; shot = null; restMark = null; lastImpact = null;
+    predDirty = true;
+    $("#verdict").textContent = "Predicted rest point is marked on the table. Strike to see if the ball agrees.";
+  }
+  $("#strike").addEventListener("click", doStrike);
+  $("#reset").addEventListener("click", doReset);
+
+  // ---------- canvas geometry ----------
+  const cv = $("#table"), ctx = cv.getContext("2d");
+  const ch = $("#chart"), cctx = ch.getContext("2d");
+  const M = { l: 30, t: 22, r: 8, b: 8 };
+  let scale = 400, cw = 800, chh = 400, dpr = 1;
+  function layout() {
+    dpr = Math.min(window.devicePixelRatio || 1, 2);
+    cw = cv.clientWidth || cv.parentElement.clientWidth - 20;
+    scale = (cw - M.l - M.r) / BOX.W;
+    chh = Math.round(BOX.H * scale + M.t + M.b);
+    cv.style.height = chh + "px";
+    cv.width = Math.round(cw * dpr); cv.height = Math.round(chh * dpr);
+    const w2 = ch.clientWidth, h2 = ch.clientHeight;
+    ch.width = Math.round(w2 * dpr); ch.height = Math.round(h2 * dpr);
+  }
+  const sx = (x) => M.l + x * scale;
+  const sy = (y) => M.t + (BOX.H - y) * scale;
+  const toWorld = (px, py) => [(px - M.l) / scale, BOX.H - (py - M.t) / scale];
+  new ResizeObserver(() => { layout(); }).observe(cv.parentElement);
+
+  // theme tokens for canvas
+  let C = {};
+  function readTokens() {
+    const cs = getComputedStyle(document.documentElement);
+    ["field", "ink", "muted", "line", "grid", "grid-major", "accent", "cool", "good", "panel", "warn"]
+      .forEach((k) => (C[k] = cs.getPropertyValue("--" + k).trim()));
+  }
+  readTokens();
+  matchMedia("(prefers-color-scheme: dark)").addEventListener("change", readTokens);
+  new MutationObserver(readTokens).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme", "class", "style"] });
+
+  function hexToRgb(h) {
+    h = h.replace("#", "");
+    if (h.length === 3) h = h.split("").map((c) => c + c).join("");
+    const n = parseInt(h, 16); return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+  }
+  function mix(a, b, t) {
+    const A = hexToRgb(a), B = hexToRgb(b);
+    return `rgb(${A.map((v, i) => Math.round(v + (B[i] - v) * t)).join(",")})`;
+  }
+  function withAlpha(hex, a) { const [r, g, b] = hexToRgb(hex); return `rgba(${r},${g},${b},${a})`; }
+
+  // ---------- pointer input ----------
+  function pointerWorld(e) {
+    const r = cv.getBoundingClientRect();
+    return toWorld(e.clientX - r.left, e.clientY - r.top);
+  }
+  const PULL_MAX = 0.6;   // metres of pull for full impulse
+  const ballPickRadius = () => Math.max(+ui.rad.value * 1.6, 16 / scale);
+  cv.addEventListener("pointerdown", (e) => {
+    cv.focus({ preventScroll: true });
+    const [x, y] = pointerWorld(e);
+    cv.setPointerCapture(e.pointerId);
+    if (ball.mode === "rest" && Math.hypot(x - ball.x, y - ball.y) < ballPickRadius()) {
+      dragBall = { ox: ball.x - x, oy: ball.y - y };
+      cv.classList.add("grabbing");
+    } else {
+      aiming = { x, y };
+      updateAim();
+    }
+  });
+  cv.addEventListener("pointermove", (e) => {
+    const [x, y] = pointerWorld(e);
+    if (dragBall) {
+      const R = +ui.rad.value;
+      ball.x = Math.min(Math.max(x + dragBall.ox, R), BOX.W - R);
+      ball.y = Math.min(Math.max(y + dragBall.oy, R), BOX.H - R);
+      trail = []; restMark = null; predDirty = true;
+    } else if (aiming) {
+      aiming.x = x; aiming.y = y; updateAim();
+    } else {
+      const over = ball.mode === "rest" && Math.hypot(x - ball.x, y - ball.y) < ballPickRadius();
+      cv.classList.toggle("grab", over);
+    }
+  });
+  function endPointer(e, cancel) {
+    if (dragBall) { dragBall = null; cv.classList.remove("grabbing"); }
+    if (aiming) {
+      const pull = Math.hypot(ball.x - aiming.x, ball.y - aiming.y);
+      aiming = null;
+      if (!cancel && pull > 0.02) doStrike();
+      else predDirty = true;
+    }
+  }
+  cv.addEventListener("pointerup", (e) => endPointer(e, false));
+  cv.addEventListener("pointercancel", (e) => endPointer(e, true));
+  function updateAim() {
+    const dx = ball.x - aiming.x, dy = ball.y - aiming.y;
+    const pull = Math.hypot(dx, dy);
+    if (pull < 0.005) return;
+    const frac = Math.min(pull / PULL_MAX, 1);
+    ui.ang.value = Math.round(Math.atan2(dy, dx) * 180 / Math.PI);
+    ui.imp.value = Math.max(+ui.imp.min, frac * +ui.imp.max).toFixed(2);
+    syncOutputs(); predDirty = true;
+  }
+  cv.addEventListener("keydown", (e) => {
+    const big = e.shiftKey ? 10 : 1;
+    if (e.key === "ArrowLeft" || e.key === "ArrowRight") {
+      let a = +ui.ang.value + (e.key === "ArrowLeft" ? big : -big);
+      if (a > 180) a -= 360; if (a < -180) a += 360;
+      ui.ang.value = a;
+    } else if (e.key === "ArrowUp" || e.key === "ArrowDown") {
+      ui.imp.value = Math.min(+ui.imp.max, Math.max(+ui.imp.min, +ui.imp.value + (e.key === "ArrowUp" ? 0.01 : -0.01) * big));
+    } else if (e.key === " " || e.key === "Enter") { doStrike(); }
+    else if (e.key === "r" || e.key === "R") { doReset(); }
+    else if (e.key === "Escape" && aiming) { aiming = null; predDirty = true; return; }
+    else return;
+    e.preventDefault(); syncOutputs(); predDirty = true;
+  });
+
+  // ---------- simulation driver ----------
+  function onEvent(type, d) {
+    const tRel = shot ? ball.t - shot.t0 : ball.t;
+    if (type === "hit") {
+      flashes.push({ ...d, born: performance.now() });
+      liveHits.push(tRel);
+      lastImpact = d.speed;
+      trail.push([ball.x, ball.y, Math.hypot(ball.vx, ball.vy), "slide"]);
+    } else if (type === "roll") {
+      live.push([tRel, Math.hypot(ball.vx, ball.vy), "roll"]);
+    } else if (type === "rest") {
+      restMark = { x: ball.x, y: ball.y };
+      predDirty = true;
+      if (shot) {
+        const p = shot.pred;
+        const err = Math.hypot(p.x - ball.x, p.y - ball.y) * 1000;
+        $("#verdict").innerHTML =
+          `Came to rest at <b>(${ball.x.toFixed(3)}, ${ball.y.toFixed(3)}) m</b> after <b>${tRel.toFixed(2)} s</b>, ` +
+          `${(ball.dist - shot.startDist).toFixed(2)} m travelled, ${ball.hits - shot.startHits} wall hit${ball.hits - shot.startHits === 1 ? "" : "s"}. ` +
+          `Prediction was off by <b>${err.toFixed(1)} mm</b>.`;
+      }
+    }
+  }
+
+  let lastFrame = performance.now(), simDebt = 0, stepsSinceNorm = 0;
+  function tick(now) {
+    const realDt = Math.min((now - lastFrame) / 1000, 0.05);
+    lastFrame = now;
+    if (ball.mode !== "rest") {
+      simDebt += realDt * timeScale;
+      const P = params();
+      let n = 0;
+      while (simDebt >= DT && n < 4000 && ball.mode !== "rest") {
+        step(ball, P, onEvent, true);
+        simDebt -= DT; n++;
+        if (++stepsSinceNorm > 500) { ball.O = orthonormalize(ball.O); stepsSinceNorm = 0; }
+        if (shot && n % 20 === 0) {
+          const tRel = ball.t - shot.t0, v = Math.hypot(ball.vx, ball.vy);
+          live.push([tRel, v, ball.mode]);
+        }
+      }
+      if (ball.mode === "rest") simDebt = 0;
+      const v = Math.hypot(ball.vx, ball.vy);
+      trail.push([ball.x, ball.y, v, ball.mode]);
+      if (trail.length > 6000) trail.splice(0, trail.length - 6000);
+    } else {
+      simDebt = 0;
+    }
+    if (predDirty && ball.mode === "rest") {
+      const P = params();
+      const b = cloneBall(ball);
+      b.t = 0; b.dist = 0; b.hits = 0;
+      applyStrike(b, +ui.imp.value, +ui.ang.value, +ui.spin.value, P);
+      pred = predict(b, P);
+      predDirty = false;
+    }
+    drawTable(now);
+    drawChart();
+    updateReadout();
+    requestAnimationFrame(tick);
+  }
+
+  // ---------- drawing: table ----------
+  function drawTable(now) {
+    const P = params();
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.clearRect(0, 0, cw, chh);
+    const x0 = sx(0), y0 = sy(BOX.H), x1 = sx(BOX.W), y1 = sy(0);
+
+    // floor
+    ctx.fillStyle = C.field; ctx.fillRect(x0, y0, x1 - x0, y1 - y0);
+    // grid: 10 cm minor, 50 cm major
+    for (let i = 1; i < 20; i++) {
+      const X = Math.round(sx(i * 0.1)) + 0.5;
+      ctx.strokeStyle = i % 5 === 0 ? C["grid-major"] : C.grid; ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(X, y0); ctx.lineTo(X, y1); ctx.stroke();
+    }
+    for (let j = 1; j < 10; j++) {
+      const Y = Math.round(sy(j * 0.1)) + 0.5;
+      ctx.strokeStyle = j % 5 === 0 ? C["grid-major"] : C.grid;
+      ctx.beginPath(); ctx.moveTo(x0, Y); ctx.lineTo(x1, Y); ctx.stroke();
+    }
+    // rulers
+    ctx.fillStyle = C.muted; ctx.font = `11px ${getComputedStyle(document.body).getPropertyValue("--font-mono") || "monospace"}`;
+    ctx.textAlign = "center"; ctx.textBaseline = "bottom";
+    for (let i = 0; i <= 20; i++) {
+      const X = sx(i * 0.1), major = i % 5 === 0;
+      ctx.strokeStyle = C.muted; ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(X, y0 - 4); ctx.lineTo(X, y0 - (major ? 9 : 6)); ctx.stroke();
+      if (major && scale > 120) ctx.fillText(i === 20 ? "2.0 m" : (i / 10).toFixed(1), X, y0 - 10);
+    }
+    ctx.textAlign = "right"; ctx.textBaseline = "middle";
+    for (let j = 0; j <= 10; j++) {
+      const Y = sy(j * 0.1), major = j % 5 === 0;
+      ctx.beginPath(); ctx.moveTo(x0 - 4, Y); ctx.lineTo(x0 - (major ? 9 : 6), Y); ctx.stroke();
+      if (major && scale > 120) ctx.fillText((j / 10).toFixed(1), x0 - 11, Y);
+    }
+
+    // walls
+    ctx.strokeStyle = C.ink; ctx.lineWidth = 3;
+    ctx.strokeRect(x0 - 1.5, y0 - 1.5, x1 - x0 + 3, y1 - y0 + 3);
+
+    // wall-hit flashes
+    flashes = flashes.filter((f) => now - f.born < 700);
+    for (const f of flashes) {
+      const age = (now - f.born) / 700, a = 1 - age;
+      const X = sx(f.x), Y = sy(f.y);
+      const len = 18 + 50 * Math.min(f.speed / 3, 1);
+      const g = ctx.createRadialGradient(X, Y, 0, X, Y, len);
+      g.addColorStop(0, withAlpha(C.accent, 0.55 * a)); g.addColorStop(1, withAlpha(C.accent, 0));
+      ctx.fillStyle = g; ctx.beginPath(); ctx.arc(X, Y, len, 0, Math.PI * 2); ctx.fill();
+      ctx.strokeStyle = withAlpha(C.accent, a); ctx.lineWidth = 4;
+      ctx.beginPath();
+      ctx.moveTo(X - f.ny * len * 0.6, Y - f.nx * len * 0.6); ctx.lineTo(X + f.ny * len * 0.6, Y + f.nx * len * 0.6);
+      ctx.stroke();
+      ctx.fillStyle = withAlpha(C.ink, a); ctx.textAlign = "center"; ctx.textBaseline = "middle";
+      ctx.fillText(`${f.speed.toFixed(2)} m/s`, X + f.nx * 34, Y - f.ny * 14 + (f.ny !== 0 ? -f.ny * 4 : 0));
+    }
+
+    // prediction (for the next shot when at rest, or for the shot in progress)
+    const showPred = ui.showPred.checked;
+    const pr = ball.mode === "rest" ? pred : shot && shot.pred;
+    if (showPred && pr) {
+      ctx.save();
+      ctx.setLineDash([5, 5]); ctx.strokeStyle = withAlpha(C.muted, ball.mode === "rest" ? 0.9 : 0.5); ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      const p = pr.path;
+      ctx.moveTo(sx(p[0]), sy(p[1]));
+      for (let i = 2; i < p.length; i += 2) ctx.lineTo(sx(p[i]), sy(p[i + 1]));
+      ctx.stroke();
+      ctx.restore();
+      if (!pr.moving) drawRestTarget(pr.x, pr.y, `stops ≈ (${pr.x.toFixed(2)}, ${pr.y.toFixed(2)}) m · ${pr.T.toFixed(1)} s`);
+    }
+
+    // trail, coloured by speed
+    if (ui.showTrail.checked && trail.length > 1) {
+      ctx.lineCap = "round";
+      const vmax = Math.max(maxSpeedSeen, 0.5);
+      for (let i = 1; i < trail.length; i++) {
+        const a = trail[i - 1], b = trail[i];
+        const t = Math.min(b[2] / vmax, 1);
+        ctx.strokeStyle = mix(C.cool, C.accent, t);
+        ctx.globalAlpha = ball.mode === "rest" ? 0.75 : 0.35 + 0.65 * (i / trail.length);
+        ctx.lineWidth = 1.5 + 2.5 * t;
+        ctx.beginPath(); ctx.moveTo(sx(a[0]), sy(a[1])); ctx.lineTo(sx(b[0]), sy(b[1])); ctx.stroke();
+      }
+      ctx.globalAlpha = 1;
+    }
+
+    // actual rest mark
+    if (restMark) {
+      ctx.strokeStyle = C.good; ctx.lineWidth = 2;
+      const X = sx(restMark.x), Y = sy(restMark.y), r = Math.max(P.R * scale, 7) + 6;
+      ctx.beginPath(); ctx.arc(X, Y, r, 0, Math.PI * 2); ctx.stroke();
+    }
+
+    // aim: cue + direction arrow (only when the ball is at rest or while dragging)
+    if (ball.mode === "rest" || aiming) drawAim(P);
+
+    drawBall(P);
+
+    if (ui.showVec.checked && ball.mode !== "rest") {
+      const X = sx(ball.x), Y = sy(ball.y);
+      const k = 0.12 * scale;   // 1 m/s = 12 cm on screen
+      drawArrow(X, Y, X + ball.vx * k, Y - ball.vy * k, C.ink, 2);
+    }
+  }
+
+  function drawRestTarget(x, y, label) {
+    const X = sx(x), Y = sy(y), r = 9;
+    ctx.strokeStyle = C.ink; ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.arc(X, Y, r, 0, Math.PI * 2); ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(X - r - 5, Y); ctx.lineTo(X - 3, Y); ctx.moveTo(X + 3, Y); ctx.lineTo(X + r + 5, Y);
+    ctx.moveTo(X, Y - r - 5); ctx.lineTo(X, Y - 3); ctx.moveTo(X, Y + 3); ctx.lineTo(X, Y + r + 5);
+    ctx.stroke();
+    if (scale < 140) return;
+    ctx.font = `11px ${getComputedStyle(document.body).getPropertyValue("--font-mono") || "monospace"}`;
+    const w = ctx.measureText(label).width + 12;
+    let lx = X + 16, ly = Y - 22;
+    if (lx + w > sx(BOX.W) - 4) lx = X - 16 - w;
+    if (ly < sy(BOX.H) + 4) ly = Y + 12;
+    ctx.fillStyle = withAlpha(C.panel, 0.92); ctx.strokeStyle = C.line; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.roundRect(lx, ly, w, 18, 4); ctx.fill(); ctx.stroke();
+    ctx.fillStyle = C.ink; ctx.textAlign = "left"; ctx.textBaseline = "middle";
+    ctx.fillText(label, lx + 6, ly + 9.5);
+  }
+
+  function drawArrow(x0, y0, x1, y1, color, w) {
+    const dx = x1 - x0, dy = y1 - y0, L = Math.hypot(dx, dy);
+    if (L < 4) return;
+    const ux = dx / L, uy = dy / L, hs = 7;
+    ctx.strokeStyle = color; ctx.fillStyle = color; ctx.lineWidth = w;
+    ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(x1 - ux * hs, y1 - uy * hs); ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(x1, y1); ctx.lineTo(x1 - ux * hs * 1.6 - uy * hs * 0.8, y1 - uy * hs * 1.6 + ux * hs * 0.8);
+    ctx.lineTo(x1 - ux * hs * 1.6 + uy * hs * 0.8, y1 - uy * hs * 1.6 - ux * hs * 0.8); ctx.closePath(); ctx.fill();
+  }
+
+  function drawAim(P) {
+    const a = +ui.ang.value * Math.PI / 180, dx = Math.cos(a), dy = -Math.sin(a); // screen dirs
+    const frac = +ui.imp.value / +ui.imp.max;
+    const X = sx(ball.x), Y = sy(ball.y), r = Math.max(P.R * scale, 7);
+    // cue stick behind the ball; it is pulled back further for a harder strike
+    const gap = r + 6 + frac * 0.18 * scale, len = Math.min(0.9 * scale, 260);
+    const cx0 = X - dx * gap, cy0 = Y - dy * gap, cx1 = X - dx * (gap + len), cy1 = Y - dy * (gap + len);
+    ctx.lineCap = "round";
+    ctx.strokeStyle = withAlpha(C.ink, 0.85); ctx.lineWidth = 6;
+    ctx.beginPath(); ctx.moveTo(cx0 - dx * 10, cy0 - dy * 10); ctx.lineTo(cx1, cy1); ctx.stroke();
+    ctx.strokeStyle = C.cool; ctx.lineWidth = 6;
+    ctx.beginPath(); ctx.moveTo(cx0, cy0); ctx.lineTo(cx0 - dx * 10, cy0 - dy * 10); ctx.stroke();
+    // power gauge along the cue
+    ctx.strokeStyle = withAlpha(C.accent, 0.9); ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.arc(X, Y, r + 10, Math.atan2(dy, dx) - frac * Math.PI, Math.atan2(dy, dx) + frac * Math.PI); ctx.stroke();
+    // shot direction
+    drawArrow(X + dx * (r + 4), Y + dy * (r + 4), X + dx * (r + 30 + frac * 40), Y + dy * (r + 30 + frac * 40), C.accent, 2);
+    if (aiming) {
+      ctx.setLineDash([2, 4]); ctx.strokeStyle = C.muted; ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(X, Y); ctx.lineTo(sx(aiming.x), sy(aiming.y)); ctx.stroke(); ctx.setLineDash([]);
+    }
+  }
+
+  function drawBall(P) {
+    const X = sx(ball.x), Y = sy(ball.y), r = Math.max(P.R * scale, 7);
+    // contact shadow
+    ctx.fillStyle = withAlpha(C.ink, 0.18);
+    ctx.beginPath(); ctx.ellipse(X + r * 0.25, Y + r * 0.3, r * 1.02, r * 0.95, 0, 0, Math.PI * 2); ctx.fill();
+    // body
+    const g = ctx.createRadialGradient(X - r * 0.35, Y - r * 0.4, r * 0.1, X, Y, r);
+    g.addColorStop(0, mix(C.accent, "#ffffff", 0.45)); g.addColorStop(0.55, C.accent); g.addColorStop(1, mix(C.accent, "#000000", 0.35));
+    ctx.fillStyle = g; ctx.beginPath(); ctx.arc(X, Y, r, 0, Math.PI * 2); ctx.fill();
+    // body-fixed markings: six axis points; visible when facing up
+    const O = ball.O;
+    for (let c = 0; c < 3; c++) {
+      for (const s of [1, -1]) {
+        const px = s * O[c], py = s * O[3 + c], pz = s * O[6 + c];
+        if (pz <= 0.02) continue;
+        const dr = r * 0.2 * (0.45 + 0.55 * pz);
+        ctx.fillStyle = c === 0 ? withAlpha("#ffffff", 0.35 + 0.6 * pz) : withAlpha("#1a0b03", 0.25 + 0.5 * pz);
+        ctx.beginPath(); ctx.arc(X + px * r * 0.82, Y - py * r * 0.82, dr, 0, Math.PI * 2); ctx.fill();
+      }
+    }
+    // specular
+    ctx.fillStyle = "rgba(255,255,255,0.55)";
+    ctx.beginPath(); ctx.ellipse(X - r * 0.38, Y - r * 0.42, r * 0.22, r * 0.14, -0.6, 0, Math.PI * 2); ctx.fill();
+  }
+
+  // ---------- drawing: chart ----------
+  function drawChart() {
+    const w = ch.clientWidth, h = ch.clientHeight;
+    cctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    cctx.clearRect(0, 0, w, h);
+    const pad = { l: 40, r: 10, t: 8, b: 20 };
+    const pw = w - pad.l - pad.r, ph = h - pad.t - pad.b;
+    const pr = shot ? shot.pred : pred;
+    if (!pr) return;
+    let tMax = Math.max(pr.T, live.length ? live[live.length - 1][0] : 0, 0.5);
+    let vMax = 0;
+    for (let i = 1; i < pr.curve.length; i += 2) vMax = Math.max(vMax, pr.curve[i]);
+    for (const s of live) vMax = Math.max(vMax, s[1]);
+    vMax = niceCeil(Math.max(vMax, 0.2));
+    tMax = niceCeil(tMax);
+    const X = (t) => pad.l + (t / tMax) * pw, Y = (v) => pad.t + ph - (v / vMax) * ph;
+    const mono = getComputedStyle(document.body).getPropertyValue("--font-mono") || "monospace";
+    cctx.font = `10.5px ${mono}`;
+    // grid + axes
+    cctx.strokeStyle = C.grid.startsWith("rgba") ? C["grid-major"] : C.line; cctx.lineWidth = 1;
+    cctx.fillStyle = C.muted; cctx.textAlign = "right"; cctx.textBaseline = "middle";
+    for (let i = 0; i <= 4; i++) {
+      const v = vMax * i / 4, yy = Math.round(Y(v)) + 0.5;
+      cctx.beginPath(); cctx.moveTo(pad.l, yy); cctx.lineTo(pad.l + pw, yy); cctx.stroke();
+      cctx.fillText(v.toFixed(vMax < 2 ? 2 : 1), pad.l - 6, yy);
+    }
+    cctx.textAlign = "center"; cctx.textBaseline = "top";
+    for (let i = 0; i <= 5; i++) {
+      const t = tMax * i / 5;
+      cctx.fillText(t.toFixed(tMax < 5 ? 1 : 0) + (i === 5 ? " s" : ""), X(t), pad.t + ph + 5);
+    }
+    cctx.save(); cctx.translate(10, pad.t + ph / 2); cctx.rotate(-Math.PI / 2);
+    cctx.textAlign = "center"; cctx.textBaseline = "middle"; cctx.fillText("m/s", 0, 0); cctx.restore();
+
+    // predicted curve
+    cctx.setLineDash([4, 4]); cctx.strokeStyle = C.muted; cctx.lineWidth = 1.5;
+    cctx.beginPath();
+    for (let i = 0; i < pr.curve.length; i += 2) {
+      const xx = X(pr.curve[i]), yy = Y(pr.curve[i + 1]);
+      i === 0 ? cctx.moveTo(xx, yy) : cctx.lineTo(xx, yy);
+    }
+    cctx.stroke(); cctx.setLineDash([]);
+    if (pr.rollT !== null && !shot) {
+      cctx.fillStyle = C.muted; cctx.textAlign = "left"; cctx.textBaseline = "bottom";
+    }
+
+    // live curve, coloured by mode
+    for (let i = 1; i < live.length; i++) {
+      const a = live[i - 1], b = live[i];
+      cctx.strokeStyle = b[2] === "roll" ? C.cool : C.accent; cctx.lineWidth = 2.25;
+      cctx.beginPath(); cctx.moveTo(X(a[0]), Y(a[1])); cctx.lineTo(X(b[0]), Y(b[1])); cctx.stroke();
+    }
+    if (live.length) {
+      const e = live[live.length - 1];
+      cctx.fillStyle = e[2] === "roll" ? C.cool : C.accent;
+      cctx.beginPath(); cctx.arc(X(e[0]), Y(e[1]), 3.5, 0, Math.PI * 2); cctx.fill();
+    }
+    // wall-hit ticks (live, or predicted ones before a shot)
+    const ticks = shot ? liveHits : pr.hitsT;
+    cctx.strokeStyle = shot ? C.ink : C.muted; cctx.lineWidth = 1.5;
+    for (const t of ticks) {
+      const xx = Math.round(X(t)) + 0.5;
+      cctx.beginPath(); cctx.moveTo(xx, pad.t + ph); cctx.lineTo(xx, pad.t + ph - 8); cctx.stroke();
+    }
+  }
+  function niceCeil(v) {
+    const p = Math.pow(10, Math.floor(Math.log10(v))), n = v / p;
+    return (n <= 1 ? 1 : n <= 2 ? 2 : n <= 2.5 ? 2.5 : n <= 5 ? 5 : 10) * p;
+  }
+
+  // ---------- readout ----------
+  const o = {
+    state: $("#o-state"), speed: $("#o-speed"), vel: $("#o-vel"), spin: $("#o-spin"), slip: $("#o-slip"),
+    ke: $("#o-ke"), ket: $("#o-ket"), ker: $("#o-ker"), dist: $("#o-dist"), time: $("#o-time"),
+    hits: $("#o-hits"), last: $("#o-last"),
+  };
+  let lastText = "";
+  function updateReadout() {
+    const P = params();
+    const v = Math.hypot(ball.vx, ball.vy), w = Math.hypot(ball.wx, ball.wy);
+    if (v > maxSpeedSeen) maxSpeedSeen = v;
+    const slip = Math.hypot(ball.vx - P.R * ball.wy, ball.vy + P.R * ball.wx);
+    const keT = 0.5 * P.m * v * v, keR = 0.5 * 0.4 * P.m * P.R * P.R * w * w, ke = keT + keR;
+    const mode = ball.mode === "rest" ? (shot ? "rest" : "ready") : ball.mode;
+    const label = { slide: "Sliding", roll: "Rolling", rest: "At rest", ready: "Ready" }[mode];
+    const tRel = shot ? ball.t - shot.t0 : 0;
+    const dist = shot ? ball.dist - shot.startDist : 0;
+    const hits = shot ? ball.hits - shot.startHits : 0;
+    const text = [mode, v.toFixed(2), w.toFixed(1), ke.toFixed(3), dist.toFixed(2), tRel.toFixed(2), hits, lastImpact].join("|");
+    if (text === lastText) return;
+    lastText = text;
+    o.state.dataset.mode = mode; o.state.textContent = label;
+    o.speed.innerHTML = `${fmt(v, 2)}<small>m/s</small>`;
+    o.vel.textContent = `vx ${fmt(ball.vx, 2)} · vy ${fmt(ball.vy, 2)}`;
+    o.spin.innerHTML = `${fmt(w, 1)}<small>rad/s</small>`;
+    o.slip.textContent = `slip ${fmt(slip, 2)} m/s`;
+    o.ke.innerHTML = `${fmt(ke, 3)}<small>J</small>`;
+    o.ket.style.width = ke > 0 ? (keT / ke * 100) + "%" : "0";
+    o.ker.style.width = ke > 0 ? (keR / ke * 100) + "%" : "0";
+    o.dist.innerHTML = `${fmt(dist, 2)}<small>m</small>`;
+    o.time.textContent = `t ${tRel.toFixed(2)} s`;
+    o.hits.textContent = hits;
+    o.last.textContent = lastImpact == null ? "last impact –" : `last impact ${lastImpact.toFixed(2)} m/s`;
+  }
+
+  // ---------- go ----------
+  syncOutputs();
+  layout();
+  requestAnimationFrame((t) => { lastFrame = t; tick(t); });
+})();
+</script>
