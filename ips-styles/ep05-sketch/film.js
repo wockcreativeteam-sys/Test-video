@@ -15,6 +15,7 @@ export async function setup(canvas) {
   cut = { hosp: wd('m1', 'one'), paths: wd('m1', 'multiple'), knee: wd('m2', 'orthopedic'), heart: wd('m2', 'cardiac'), brain: wd('m2', 'neurological'),
     kidney: wd('m2', 'transplant'), cancer: wd('m2', 'cancer'), back: wd('m2', 'india'), consult: L('m3').t0 - .2, end: L('cta').t0 - .4, cta: L('cta').t0 };
   window.DUR = TL.dur;
+  await LOGO.decode();
   canvas.width = W; canvas.height = H; ctx = canvas.getContext('2d');
   paper = makePaper();
   build();
@@ -181,8 +182,8 @@ function frame(t) {
     ctx.save(); ctx.shadowColor = 'rgba(40,30,20,.35)'; ctx.shadowBlur = 40; ctx.shadowOffsetY = -12;
     ctx.translate(0, y0); ctx.drawImage(paper, 300, 300, W / 2, H / 2, 0, 0, W, H); ctx.restore();
     if (ek >= 1) { handwrite(ctx, 'Mumbai · Wockhardt Hospitals', 60, 120, 48, seg(t, cut.end + .6, cut.end + 1.2), { font: 'Reenie Beanie', col: hex('#5a4a3c') }); hospitalMini(ctx, t); }
-    handwrite(ctx, 'Send your medical reports', W / 2, 400, 92, seg(t, cut.cta, cut.cta + 1.1), { font: 'Caveat', weight: 600, align: 'center', col: INK });
-    handwrite(ctx, 'for specialist review.', W / 2, 510, 92, seg(t, cut.cta + 1.0, cut.cta + 1.9), { font: 'Caveat', weight: 600, align: 'center', col: hex('#a8432e') });
+    handwrite(ctx, 'Send your medical reports', W / 2, 480, 92, seg(t, cut.cta, cut.cta + 1.1), { font: 'Caveat', weight: 600, align: 'center', col: INK });
+    handwrite(ctx, 'for specialist review.', W / 2, 590, 92, seg(t, cut.cta + 1.0, cut.cta + 1.9), { font: 'Caveat', weight: 600, align: 'center', col: hex('#a8432e') });
     wordmark(ctx, seg(t, cut.end + 1.2, cut.end + 1.8));
     endCrisp(ctx, t, cut.cta + 2.0);
   } else wordmark(ctx, seg(t, .3, 1.0), true);
@@ -201,13 +202,11 @@ function hospitalMini(c, t) {
   const cp = seg(t, cut.end + 1.6, cut.end + 2.6);
   if (cp > 0) { c.save(); c.beginPath(); c.arc(W / 2, 1040, 40 + cp * 400, 0, TAU); c.clip(); wash(c, [[W / 2 - 220, 1180], [W / 2 - 220, 920], [W / 2 + 220, 920], [W / 2 + 220, 1180]], COL.stone, { a: .5, j: 5, seed: 81, dx: 3, dy: 2 }); wash(c, [[W / 2 - 240, 900], [W / 2 + 240, 900], [W / 2 + 240, 920], [W / 2 - 240, 920]], COL.red, { a: .55, j: 3, seed: 82 }); wash(c, ellipse(W / 2, 1190, 460, 40), COL.violet, { a: .2, j: 5, seed: 83 }); c.restore(); }
 }
+const LOGO = new Image(); LOGO.src = 'logo-color.png';
 function wordmark(c, a, corner = false) {
-  if (a <= 0) return;
-  c.save(); c.globalAlpha = a; c.textAlign = corner ? 'right' : 'center';
-  const x = corner ? W - 50 : W / 2, y = corner ? 100 : 250;
-  c.font = `600 ${corner ? 54 : 84}px Caveat`; c.fillStyle = '#b8322a'; c.fillText('Wockhardt', x, y);
-  c.font = `500 ${corner ? 26 : 38}px Caveat`; c.fillStyle = '#3d5a86'; c.fillText('H O S P I T A L S', x, y + (corner ? 30 : 46));
-  c.restore();
+  if (a <= 0 || !LOGO.complete) return;
+  const w = corner ? 380 : 860, h = w * LOGO.height / LOGO.width, x = corner ? W - 40 - w : W / 2 - w / 2, y = corner ? 60 : 150;
+  c.save(); c.globalAlpha = a; c.drawImage(LOGO, x, y, w, h); c.restore();
 }
 function endCrisp(c, t, t0) {
   const a = seg(t, t0, t0 + .5); if (a <= 0) return;

@@ -12,7 +12,7 @@ export const key = (t, ks) => { if (t <= ks[0][0]) return ks[0][1]; for (let i =
 
 export class Stage {
   constructor(canvas) {
-    this.E = new Impasto(canvas, { W, H, ss: 2 });
+    this.E = new Impasto(canvas, { W, H, ss: new URLSearchParams(location.search).get('preview') ? 1 : 2 });
     this.dyn = new Strokes(16384);
     this.people = {};
     // crisp overlay
