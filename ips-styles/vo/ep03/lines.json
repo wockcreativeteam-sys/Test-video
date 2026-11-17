@@ -1,0 +1,26 @@
+[
+ {
+  "id": "hook",
+  "text": "Your treatment journey shouldn't begin with airport stress.",
+  "voice": "af_heart",
+  "speed": 0.98
+ },
+ {
+  "id": "m1",
+  "text": "When you travel thousands of kilometres for medical care, the little things matter.",
+  "voice": "af_heart",
+  "speed": 0.98
+ },
+ {
+  "id": "m2",
+  "text": "Wockhardt Hospitals supports international patients with airport pickup and drop, accommodation assistance, and coordinated hospital arrival.",
+  "voice": "af_heart",
+  "speed": 0.98
+ },
+ {
+  "id": "cta",
+  "text": "Focus on your health. Let us help coordinate your journey.",
+  "voice": "af_heart",
+  "speed": 0.98
+ }
+]

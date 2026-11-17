@@ -1,0 +1,261 @@
+{
+ "ep": "ep05",
+ "dur": 27.625,
+ "lines": [
+  {
+   "id": "hook",
+   "text": "Looking for specialized treatment in India?",
+   "t0": 0.7,
+   "dur": 2.217,
+   "words": [
+    {
+     "w": "Looking",
+     "t": 0.73,
+     "end": 1.094
+    },
+    {
+     "w": "for",
+     "t": 1.094,
+     "end": 1.28
+    },
+    {
+     "w": "specialized",
+     "t": 1.28,
+     "end": 1.941
+    },
+    {
+     "w": "treatment",
+     "t": 1.941,
+     "end": 2.336
+    },
+    {
+     "w": "in",
+     "t": 2.336,
+     "end": 2.506
+    },
+    {
+     "w": "India?",
+     "t": 2.506,
+     "end": 2.84
+    }
+   ]
+  },
+  {
+   "id": "m1",
+   "text": "One destination. Multiple specialized care pathways.",
+   "t0": 3.367,
+   "dur": 3.444,
+   "words": [
+    {
+     "w": "One",
+     "t": 3.397,
+     "end": 3.724
+    },
+    {
+     "w": "destination.",
+     "t": 3.724,
+     "end": 4.437
+    },
+    {
+     "w": "Multiple",
+     "t": 4.787,
+     "end": 5.31
+    },
+    {
+     "w": "specialized",
+     "t": 5.31,
+     "end": 6.004
+    },
+    {
+     "w": "care",
+     "t": 6.004,
+     "end": 6.339
+    },
+    {
+     "w": "pathways.",
+     "t": 6.339,
+     "end": 6.737
+    }
+   ]
+  },
+  {
+   "id": "m2",
+   "text": "Wockhardt Hospitals supports international patients seeking orthopedic, cardiac, neurological, transplant and cancer care in India,",
+   "t0": 7.261,
+   "dur": 8.973,
+   "words": [
+    {
+     "w": "Wockhardt",
+     "t": 7.291,
+     "end": 7.608
+    },
+    {
+     "w": "Hospitals",
+     "t": 7.608,
+     "end": 8.02
+    },
+    {
+     "w": "supports",
+     "t": 8.02,
+     "end": 8.324
+    },
+    {
+     "w": "international",
+     "t": 8.324,
+     "end": 8.975
+    },
+    {
+     "w": "patients",
+     "t": 8.975,
+     "end": 9.279
+    },
+    {
+     "w": "seeking",
+     "t": 9.279,
+     "end": 9.572
+    },
+    {
+     "w": "orthopedic,",
+     "t": 9.572,
+     "end": 10.091
+    },
+    {
+     "w": "cardiac,",
+     "t": 10.351,
+     "end": 11.551
+    },
+    {
+     "w": "neurological,",
+     "t": 11.941,
+     "end": 12.571
+    },
+    {
+     "w": "transplant",
+     "t": 12.901,
+     "end": 13.654
+    },
+    {
+     "w": "and",
+     "t": 13.654,
+     "end": 13.995
+    },
+    {
+     "w": "cancer",
+     "t": 13.995,
+     "end": 14.637
+    },
+    {
+     "w": "care",
+     "t": 14.637,
+     "end": 15.224
+    },
+    {
+     "w": "in",
+     "t": 15.224,
+     "end": 15.537
+    },
+    {
+     "w": "India,",
+     "t": 15.537,
+     "end": 16.151
+    }
+   ]
+  },
+  {
+   "id": "m3",
+   "text": "with specialist evaluation and coordinated support throughout the journey.",
+   "t0": 16.684,
+   "dur": 4.19,
+   "words": [
+    {
+     "w": "with",
+     "t": 16.714,
+     "end": 16.945
+    },
+    {
+     "w": "specialist",
+     "t": 16.945,
+     "end": 17.552
+    },
+    {
+     "w": "evaluation",
+     "t": 17.552,
+     "end": 18.296
+    },
+    {
+     "w": "and",
+     "t": 18.296,
+     "end": 18.51
+    },
+    {
+     "w": "coordinated",
+     "t": 18.51,
+     "end": 19.271
+    },
+    {
+     "w": "support",
+     "t": 19.271,
+     "end": 19.69
+    },
+    {
+     "w": "throughout",
+     "t": 19.69,
+     "end": 20.162
+    },
+    {
+     "w": "the",
+     "t": 20.162,
+     "end": 20.375
+    },
+    {
+     "w": "journey.",
+     "t": 20.375,
+     "end": 20.794
+    }
+   ]
+  },
+  {
+   "id": "cta",
+   "text": "Send your medical reports for specialist review.",
+   "t0": 21.774,
+   "dur": 2.651,
+   "words": [
+    {
+     "w": "Send",
+     "t": 21.804,
+     "end": 22.025
+    },
+    {
+     "w": "your",
+     "t": 22.025,
+     "end": 22.246
+    },
+    {
+     "w": "medical",
+     "t": 22.246,
+     "end": 22.779
+    },
+    {
+     "w": "reports",
+     "t": 22.779,
+     "end": 23.181
+    },
+    {
+     "w": "for",
+     "t": 23.181,
+     "end": 23.386
+    },
+    {
+     "w": "specialist",
+     "t": 23.386,
+     "end": 23.969
+    },
+    {
+     "w": "review.",
+     "t": 23.969,
+     "end": 24.354
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,32 @@
+[
+ {
+  "id": "hook",
+  "text": "Need a medical visa to travel to India?",
+  "voice": "af_heart",
+  "speed": 0.98
+ },
+ {
+  "id": "m1",
+  "text": "Once your treatment plan is confirmed, Wockhardt Hospitals can assist you with the documentation required for your medical visa journey,",
+  "voice": "af_heart",
+  "speed": 0.98
+ },
+ {
+  "id": "m2",
+  "text": "including a Medical Visa Invitation Letter.",
+  "voice": "af_heart",
+  "speed": 0.98
+ },
+ {
+  "id": "m3",
+  "text": "Our International Patient Services team helps guide you through the process before you travel to India.",
+  "voice": "af_heart",
+  "speed": 0.98
+ },
+ {
+  "id": "cta",
+  "text": "Share your medical reports to begin your medical visa process.",
+  "voice": "af_heart",
+  "speed": 0.98
+ }
+]

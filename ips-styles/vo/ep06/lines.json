@@ -1,0 +1,26 @@
+[
+ {
+  "id": "hook",
+  "text": "Flying home after treatment? Your care journey can continue.",
+  "voice": "af_heart",
+  "speed": 0.98
+ },
+ {
+  "id": "m1",
+  "text": "Returning home doesn't have to mean losing contact with your care team.",
+  "voice": "af_heart",
+  "speed": 0.98
+ },
+ {
+  "id": "m2",
+  "text": "Wockhardt Hospitals supports international patients with post-care follow-ups, helping maintain continuity after they return home.",
+  "voice": "af_heart",
+  "speed": 0.98
+ },
+ {
+  "id": "cta",
+  "text": "Start your care journey with Wockhardt Hospitals.",
+  "voice": "af_heart",
+  "speed": 0.98
+ }
+]

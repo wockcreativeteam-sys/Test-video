@@ -1,0 +1,253 @@
+{
+ "ep": "ep06",
+ "dur": 23.829,
+ "lines": [
+  {
+   "id": "hook",
+   "text": "Flying home after treatment? Your care journey can continue.",
+   "t0": 0.7,
+   "dur": 3.453,
+   "words": [
+    {
+     "w": "Flying",
+     "t": 0.71,
+     "end": 0.984
+    },
+    {
+     "w": "home",
+     "t": 0.984,
+     "end": 1.364
+    },
+    {
+     "w": "after",
+     "t": 1.364,
+     "end": 1.761
+    },
+    {
+     "w": "treatment?",
+     "t": 1.761,
+     "end": 2.23
+    },
+    {
+     "w": "Your",
+     "t": 2.6,
+     "end": 2.789
+    },
+    {
+     "w": "care",
+     "t": 2.789,
+     "end": 3.091
+    },
+    {
+     "w": "journey",
+     "t": 3.091,
+     "end": 3.435
+    },
+    {
+     "w": "can",
+     "t": 3.435,
+     "end": 3.61
+    },
+    {
+     "w": "continue.",
+     "t": 3.61,
+     "end": 4.08
+    }
+   ]
+  },
+  {
+   "id": "m1",
+   "text": "Returning home doesn't have to mean losing contact with your care team.",
+   "t0": 4.753,
+   "dur": 3.907,
+   "words": [
+    {
+     "w": "Returning",
+     "t": 4.783,
+     "end": 5.359
+    },
+    {
+     "w": "home",
+     "t": 5.359,
+     "end": 5.717
+    },
+    {
+     "w": "doesn't",
+     "t": 5.717,
+     "end": 5.975
+    },
+    {
+     "w": "have",
+     "t": 5.975,
+     "end": 6.333
+    },
+    {
+     "w": "to",
+     "t": 6.333,
+     "end": 6.525
+    },
+    {
+     "w": "mean",
+     "t": 6.525,
+     "end": 6.75
+    },
+    {
+     "w": "losing",
+     "t": 6.75,
+     "end": 7.141
+    },
+    {
+     "w": "contact",
+     "t": 7.141,
+     "end": 7.55
+    },
+    {
+     "w": "with",
+     "t": 7.55,
+     "end": 7.775
+    },
+    {
+     "w": "your",
+     "t": 7.775,
+     "end": 8.0
+    },
+    {
+     "w": "care",
+     "t": 8.0,
+     "end": 8.358
+    },
+    {
+     "w": "team.",
+     "t": 8.358,
+     "end": 8.583
+    }
+   ]
+  },
+  {
+   "id": "m2",
+   "text": "Wockhardt Hospitals supports international patients with post-care follow-ups, helping maintain continuity after they return home.",
+   "t0": 9.26,
+   "dur": 7.975,
+   "words": [
+    {
+     "w": "Wockhardt",
+     "t": 9.28,
+     "end": 9.761
+    },
+    {
+     "w": "Hospitals",
+     "t": 9.761,
+     "end": 10.387
+    },
+    {
+     "w": "supports",
+     "t": 10.387,
+     "end": 10.85
+    },
+    {
+     "w": "international",
+     "t": 10.85,
+     "end": 11.839
+    },
+    {
+     "w": "patients",
+     "t": 11.839,
+     "end": 12.302
+    },
+    {
+     "w": "with",
+     "t": 12.302,
+     "end": 12.547
+    },
+    {
+     "w": "post-care",
+     "t": 12.547,
+     "end": 13.154
+    },
+    {
+     "w": "follow-ups,",
+     "t": 13.154,
+     "end": 13.78
+    },
+    {
+     "w": "helping",
+     "t": 14.23,
+     "end": 14.642
+    },
+    {
+     "w": "maintain",
+     "t": 14.642,
+     "end": 15.07
+    },
+    {
+     "w": "continuity",
+     "t": 15.07,
+     "end": 15.801
+    },
+    {
+     "w": "after",
+     "t": 15.801,
+     "end": 16.178
+    },
+    {
+     "w": "they",
+     "t": 16.178,
+     "end": 16.405
+    },
+    {
+     "w": "return",
+     "t": 16.405,
+     "end": 16.8
+    },
+    {
+     "w": "home.",
+     "t": 16.8,
+     "end": 17.16
+    }
+   ]
+  },
+  {
+   "id": "cta",
+   "text": "Start your care journey with Wockhardt Hospitals.",
+   "t0": 18.135,
+   "dur": 2.494,
+   "words": [
+    {
+     "w": "Start",
+     "t": 18.165,
+     "end": 18.397
+    },
+    {
+     "w": "your",
+     "t": 18.397,
+     "end": 18.614
+    },
+    {
+     "w": "care",
+     "t": 18.614,
+     "end": 18.958
+    },
+    {
+     "w": "journey",
+     "t": 18.958,
+     "end": 19.35
+    },
+    {
+     "w": "with",
+     "t": 19.35,
+     "end": 19.567
+    },
+    {
+     "w": "Wockhardt",
+     "t": 19.567,
+     "end": 19.992
+    },
+    {
+     "w": "Hospitals.",
+     "t": 19.992,
+     "end": 20.545
+    }
+   ]
+  }
+ ]
+}

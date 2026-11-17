@@ -1,0 +1,32 @@
+[
+ {
+  "id": "hook",
+  "text": "Looking for specialized treatment in India?",
+  "voice": "af_heart",
+  "speed": 0.98
+ },
+ {
+  "id": "m1",
+  "text": "One destination. Multiple specialized care pathways.",
+  "voice": "af_heart",
+  "speed": 0.98
+ },
+ {
+  "id": "m2",
+  "text": "Wockhardt Hospitals supports international patients seeking orthopedic, cardiac, neurological, transplant and cancer care in India,",
+  "voice": "af_heart",
+  "speed": 0.98
+ },
+ {
+  "id": "m3",
+  "text": "with specialist evaluation and coordinated support throughout the journey.",
+  "voice": "af_heart",
+  "speed": 0.98
+ },
+ {
+  "id": "cta",
+  "text": "Send your medical reports for specialist review.",
+  "voice": "af_heart",
+  "speed": 0.98
+ }
+]

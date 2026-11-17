@@ -1,0 +1,25 @@
+<!doctype html><html><head><meta charset="utf-8"><link rel="stylesheet" href="kit/fonts/fonts.css">
+<style>html,body{margin:0;background:#000;overflow:hidden}canvas{display:block}</style></head>
+<body><canvas id="c"></canvas><script type="module">
+import { Impasto, Strokes } from './kit/engine/impasto.js';
+import { buildPerson, face, glasses, arm, PEOPLE } from './kit/cast.js';
+const W = 1080, H = 1920, E = new Impasto(document.getElementById('c'), { W, H, ss: 2 });
+const who = ['baba', 'amara', 'priya', 'arjun'], pl = {};
+for (const s of who) { const b = buildPerson(s); pl[s] = { b: E.batch(b.body.strokes.data()), h: E.batch(b.head.strokes.data()), tb: E.texture(b.body.ref.ctx.canvas), th: E.texture(b.head.ref.ctx.canvas) }; }
+const dyn = new Strokes(4096);
+window.DUR = 1;
+window.render = t => {
+  E.begin([.86, .8, .7]);
+  who.forEach((s, i) => {
+    const x = 270 + (i % 2) * 540, y = 900 + Math.floor(i / 2) * 900, k = .62, M = [k, 0, 0, k, x, y], Mu = [k, 0, 0, k, x - 560 * k, y - 1300 * k];
+    E.under(pl[s].tb, 1120, 1400, { M: Mu, grey: 0 }); E.draw(pl[s].b, { M, grey: 0 });
+    E.under(pl[s].th, 1120, 1400, { M: Mu, grey: 0 }); E.draw(pl[s].h, { M, grey: 0 });
+    dyn.clear(); face(dyn, s, { smile: .7, t }); if (PEOPLE[s].glasses) glasses(dyn, s);
+    if (i % 2) arm(dyn, s, 1, [230, -1080], { wave: true }); else arm(dyn, s, 1, [170, -480]);
+    arm(dyn, s, -1, [-170, -480]);
+    E.drawNow(dyn.data(), { M, grey: 0, run: 0 });
+  });
+  E.finish({ vig: .2 });
+};
+render(0); window.READY = true;
+</script></body></html>

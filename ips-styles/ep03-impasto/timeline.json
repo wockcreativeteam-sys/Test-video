@@ -1,0 +1,273 @@
+{
+ "ep": "ep03",
+ "dur": 24.473,
+ "lines": [
+  {
+   "id": "hook",
+   "text": "Your treatment journey shouldn't begin with airport stress.",
+   "t0": 0.7,
+   "dur": 2.76,
+   "words": [
+    {
+     "w": "Your",
+     "t": 0.73,
+     "end": 0.957
+    },
+    {
+     "w": "treatment",
+     "t": 0.957,
+     "end": 1.404
+    },
+    {
+     "w": "journey",
+     "t": 1.404,
+     "end": 1.816
+    },
+    {
+     "w": "shouldn't",
+     "t": 1.816,
+     "end": 2.111
+    },
+    {
+     "w": "begin",
+     "t": 2.111,
+     "end": 2.49
+    },
+    {
+     "w": "with",
+     "t": 2.49,
+     "end": 2.716
+    },
+    {
+     "w": "airport",
+     "t": 2.716,
+     "end": 3.129
+    },
+    {
+     "w": "stress.",
+     "t": 3.129,
+     "end": 3.39
+    }
+   ]
+  },
+  {
+   "id": "m1",
+   "text": "When you travel thousands of kilometres for medical care, the little things matter.",
+   "t0": 3.91,
+   "dur": 4.205,
+   "words": [
+    {
+     "w": "When",
+     "t": 3.94,
+     "end": 4.126
+    },
+    {
+     "w": "you",
+     "t": 4.126,
+     "end": 4.298
+    },
+    {
+     "w": "travel",
+     "t": 4.298,
+     "end": 4.621
+    },
+    {
+     "w": "thousands",
+     "t": 4.621,
+     "end": 4.987
+    },
+    {
+     "w": "of",
+     "t": 4.987,
+     "end": 5.145
+    },
+    {
+     "w": "kilometres",
+     "t": 5.145,
+     "end": 5.745
+    },
+    {
+     "w": "for",
+     "t": 5.745,
+     "end": 5.917
+    },
+    {
+     "w": "medical",
+     "t": 5.917,
+     "end": 6.364
+    },
+    {
+     "w": "care,",
+     "t": 6.364,
+     "end": 6.66
+    },
+    {
+     "w": "the",
+     "t": 7.04,
+     "end": 7.206
+    },
+    {
+     "w": "little",
+     "t": 7.206,
+     "end": 7.52
+    },
+    {
+     "w": "things",
+     "t": 7.52,
+     "end": 7.727
+    },
+    {
+     "w": "matter.",
+     "t": 7.727,
+     "end": 8.04
+    }
+   ]
+  },
+  {
+   "id": "m2",
+   "text": "Wockhardt Hospitals supports international patients with airport pickup and drop, accommodation assistance, and coordinated hospital arrival.",
+   "t0": 8.565,
+   "dur": 8.731,
+   "words": [
+    {
+     "w": "Wockhardt",
+     "t": 8.595,
+     "end": 9.08
+    },
+    {
+     "w": "Hospitals",
+     "t": 9.08,
+     "end": 9.71
+    },
+    {
+     "w": "supports",
+     "t": 9.71,
+     "end": 10.176
+    },
+    {
+     "w": "international",
+     "t": 10.176,
+     "end": 11.172
+    },
+    {
+     "w": "patients",
+     "t": 11.172,
+     "end": 11.638
+    },
+    {
+     "w": "with",
+     "t": 11.638,
+     "end": 11.884
+    },
+    {
+     "w": "airport",
+     "t": 11.884,
+     "end": 12.332
+    },
+    {
+     "w": "pickup",
+     "t": 12.332,
+     "end": 12.761
+    },
+    {
+     "w": "and",
+     "t": 12.761,
+     "end": 12.989
+    },
+    {
+     "w": "drop,",
+     "t": 12.989,
+     "end": 13.235
+    },
+    {
+     "w": "accommodation",
+     "t": 13.635,
+     "end": 14.38
+    },
+    {
+     "w": "assistance,",
+     "t": 14.38,
+     "end": 14.975
+    },
+    {
+     "w": "and",
+     "t": 15.335,
+     "end": 15.526
+    },
+    {
+     "w": "coordinated",
+     "t": 15.526,
+     "end": 16.206
+    },
+    {
+     "w": "hospital",
+     "t": 16.206,
+     "end": 16.718
+    },
+    {
+     "w": "arrival.",
+     "t": 16.718,
+     "end": 17.215
+    }
+   ]
+  },
+  {
+   "id": "cta",
+   "text": "Focus on your health. Let us help coordinate your journey.",
+   "t0": 18.196,
+   "dur": 3.077,
+   "words": [
+    {
+     "w": "Focus",
+     "t": 18.226,
+     "end": 18.622
+    },
+    {
+     "w": "on",
+     "t": 18.622,
+     "end": 18.824
+    },
+    {
+     "w": "your",
+     "t": 18.824,
+     "end": 19.062
+    },
+    {
+     "w": "health.",
+     "t": 19.062,
+     "end": 19.336
+    },
+    {
+     "w": "Let",
+     "t": 19.666,
+     "end": 19.826
+    },
+    {
+     "w": "us",
+     "t": 19.826,
+     "end": 19.974
+    },
+    {
+     "w": "help",
+     "t": 19.974,
+     "end": 20.147
+    },
+    {
+     "w": "coordinate",
+     "t": 20.147,
+     "end": 20.707
+    },
+    {
+     "w": "your",
+     "t": 20.707,
+     "end": 20.881
+    },
+    {
+     "w": "journey.",
+     "t": 20.881,
+     "end": 21.196
+    }
+   ]
+  }
+ ]
+}
