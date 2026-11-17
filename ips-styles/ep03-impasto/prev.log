@@ -2,3 +2,8 @@
 w0 0/98  10s
 w1 0/98  15s
 w2 0/98  19s
+w0 60/98  298s
+w2 60/98  357s
+w1 60/98  388s
+done /home/user/Test-video/ips-styles/ep03-impasto/out/prev_raw.mp4 294 frames 576s
+done /home/user/Test-video/ips-styles/ep03-impasto/out/preview.mp4
